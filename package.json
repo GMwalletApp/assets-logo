@@ -1,0 +1,23 @@
+{
+  "name": "assets-logo",
+  "version": "1.0.0",
+  "description": "Cryptocurrency logo repository with hash-based naming for unlimited caching",
+  "type": "module",
+  "scripts": {
+    "check": "bun run scripts/check-updates.ts",
+    "check:json": "bun run scripts/check-updates.ts --json",
+    "sync": "bun run scripts/sync-logos.ts",
+    "sync:dry-run": "bun run scripts/sync-logos.ts --dry-run",
+    "check:overrides": "bun run scripts/check-overrides.ts",
+    "deprecate": "bun run scripts/deprecate.ts",
+    "deprecate:list": "bun run scripts/deprecate.ts --list",
+    "typecheck": "npx tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  },
+  "dependencies": {
+    "zod": "latest"
+  }
+}

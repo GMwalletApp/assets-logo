@@ -1,0 +1,96 @@
+name: Check Logo Updates
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+  repository_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.check.outputs.has_changes }}
+      changes_json: ${{ steps.check.outputs.changes_json }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Check for updates
+        id: check
+        run: |
+          RESULT=$(bun run scripts/check-updates.ts --json 2>&1 || echo '[]')
+          echo "has_changes=$(echo $RESULT | jq 'length > 0')" >> $GITHUB_OUTPUT
+          echo "changes_json=$(echo $RESULT | jq -c)" >> $GITHUB_OUTPUT
+
+      - name: Save changes as artifact
+        if: steps.check.outputs.has_changes == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: changes
+          path: changes.json
+          retention-days: 7
+
+      - name: Create PR if changes found
+        if: steps.check.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        env:
+          CHANGES_JSON: ${{ steps.check.outputs.changes_json }}
+        with:
+          script: |
+            const changes = JSON.parse(process.env.CHANGES_JSON);
+            const branchName = 'logo-update-' + new Date().toISOString().split('T')[0];
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const { data: mainRef } = await github.git.getRef({
+              owner,
+              repo,
+              ref: 'heads/main'
+            });
+            const mainSha = mainRef.object.sha;
+
+            await github.git.createRef({
+              owner,
+              repo,
+              ref: 'refs/heads/' + branchName,
+              sha: mainSha
+            });
+
+            const updated = changes.filter(function(c) { return c.type === 'updated' && !c.skipReason; }).length;
+            const deleted = changes.filter(function(c) { return c.type === 'deleted'; }).length;
+            const skipped = changes.filter(function(c) { return c.skipReason; }).length;
+
+            var changeLines = changes.map(function(c) {
+              var line = '- ' + c.chain + '/' + c.address;
+              if (c.type === 'updated') {
+                line += ': ' + c.localHash + ' -> ' + c.remoteHash;
+              }
+              if (c.skipReason) {
+                line += ' (' + c.skipReason + ')';
+              }
+              return line;
+            }).join('\n');
+
+            var dateStr = new Date().toISOString().split('T')[0];
+            var body = '## Logo Updates\n\n### Summary\n- Updated: ' + updated + '\n- Deleted: ' + deleted + '\n- Skipped: ' + skipped + '\n\n### Changes\n' + changeLines + '\n\n---\n_This PR was automatically generated_';
+
+            const { data: pr } = await github.pulls.create({
+              owner,
+              repo,
+              title: 'Update logos - ' + dateStr,
+              body: body,
+              head: branchName,
+              base: 'main'
+            });
+
+            console.log('Created PR #' + pr.number + ': ' + pr.html_url);
+            core.setOutput('pr_number', pr.number);
