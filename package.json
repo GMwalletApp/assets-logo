@@ -4,16 +4,11 @@
   "description": "Cryptocurrency logo repository with hash-based naming for unlimited caching",
   "type": "module",
   "scripts": {
-    "check": "bun run scripts/check-updates.ts",
-    "check:json": "bun run scripts/check-updates.ts --json",
-    "sync": "bun run scripts/sync-logos.ts",
-    "sync:dry-run": "bun run scripts/sync-logos.ts --dry-run",
-    "check:overrides": "bun run scripts/check-overrides.ts",
-    "deprecate": "bun run scripts/deprecate.ts",
-    "deprecate:list": "bun run scripts/deprecate.ts --list",
     "typecheck": "npx tsc --noEmit",
-    "process:override": "bun run scripts/process-issue-override.ts",
-    "download:attachment": "bun run scripts/download-issue-attachment.ts"
+    "generate:default": "bun run scripts/generate-default.ts",
+    "generate:symbols": "bun run scripts/generate-symbols.ts",
+    "apply:overrides": "bun run scripts/apply-overrides.ts",
+    "sync:all": "bun run generate:default && bun run generate:symbols && bun run apply:overrides"
   },
   "devDependencies": {
     "@types/bun": "latest",

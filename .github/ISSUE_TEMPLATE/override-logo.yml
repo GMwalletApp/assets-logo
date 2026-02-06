@@ -1,48 +1,73 @@
-name: Override Logo
-description: Submit a custom logo override for a token
+name: Logo Override
+description: Submit a custom logo override for a token or chain
 title: "[Override] "
 labels: ["override", "logo"]
 body:
   - type: dropdown
-    id: type
+    id: input_type
     attributes:
-      label: Type
+      label: How to identify the token?
       options:
-        - Override
-      description: Select "Override" to submit a logo override
+        - Token Symbol
+        - Token Address
+      description: Choose how to identify the token you want to override
     validations:
       required: true
-      
+
   - type: input
-    id: chain
+    id: symbol
     attributes:
-      label: Chain
-      description: "Blockchain name (e.g., ethereum, binance-smart-chain, solana)"
-      placeholder: "ethereum"
+      label: Token Symbol
+      placeholder: "USDT, USDC, ETH"
+      description: Enter the token symbol (e.g., USDT, USDC)
     validations:
-      required: true
-      
+      required: false
+
   - type: input
     id: address
     attributes:
       label: Token Address
-      description: "Token contract address (use 'native' for native tokens)"
-      placeholder: "0x1234..."
+      placeholder: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+      description: Enter the token contract address
+    validations:
+      required: false
+
+  - type: dropdown
+    id: chain_scope
+    attributes:
+      label: Which chains to apply?
+      options:
+        - Single Chain
+        - All Chains
+        - Multiple Chains
+      description: Select the scope of chains to apply this override
     validations:
       required: true
-      
+
+  - type: input
+    id: chain
+    attributes:
+      label: Chain Name
+      placeholder: "ethereum, binance-smart-chain, tron"
+      description: Enter the single chain name
+    validations:
+      required: false
+
+  - type: input
+    id: chains
+    attributes:
+      label: Chain Names
+      placeholder: "ethereum, binance, tron (comma-separated)"
+      description: Enter multiple chain names separated by commas
+    validations:
+      required: false
+
   - type: textarea
     id: description
     attributes:
       label: Description
-      description: "Optional description for this override"
-      
-  - type: textarea
-    id: comment
-    attributes:
-      label: Comment
-      description: "Additional comments or notes"
-      
+      description: Optional description for this override
+
   - type: checkboxes
     id: confirmations
     attributes:
