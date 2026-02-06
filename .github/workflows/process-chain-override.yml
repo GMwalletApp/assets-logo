@@ -13,7 +13,6 @@ on:
 jobs:
   process-chain-override:
     runs-on: ubuntu-latest
-    environment: override-chain
 
     steps:
       - name: Checkout repository
