@@ -109,7 +109,8 @@ Configuration file that defines override rules. This is where you specify which 
       }
     ],
     "logo": {
-      "ethereum": "x1y2z3a4b5c6d7e8.png"
+      "ethereum": "x1y2z3a4b5c6d7e8.png",
+      "binance": "c6d7e8f9a0b1c2d3.png"
     }
   },
   "blockchains": {
@@ -128,7 +129,7 @@ Configuration file that defines override rules. This is where you specify which 
 | `common.token` | `symbol` | Token symbol (e.g., "USDT") |
 | | `chains` | Array of chains or `["*"]` for all chains |
 | | `logo` | Filename in `overrides/common/` |
-| `common.logo` | `{chain}` | Chain name → logo filename |
+| `common.logo` | `{chain}` | Chain branding logo → filename in `overrides/common/` |
 | `blockchains` | `{chain}` | Chain-specific overrides |
 | | `{address}` | Token address → logo filename |
 
@@ -153,37 +154,38 @@ The final manifest used by frontends. Contains full paths and combines defaults 
 
 ## GitHub Issue Override
 
-You can submit logo overrides via GitHub Issues using the **Logo Override** template.
+You can submit logo overrides via GitHub Issues using one of two templates:
 
-### Issue Template Fields
+### Templates
+
+| Template | Purpose | Label |
+|----------|---------|-------|
+| **Token Logo Override** | Override a token's logo on specific chains | `token-override` |
+| **Chain Logo Override** | Override a chain's branding logo | `chain-override` |
+
+### Token Override Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `Input Type` | dropdown | Choose "Token Symbol" or "Token Address" |
+| `Input Type` | dropdown | "Token Symbol" or "Token Address" |
 | `Token Symbol` | input | Token symbol (e.g., USDT) - for Symbol mode |
 | `Token Address` | input | Contract address - for Address mode |
-| `Chain Scope` | dropdown | Single Chain / All Chains / Multiple Chains |
-| `Chain Name` | input | Single chain name - for Single Chain scope |
-| `Chain Names` | input | Comma-separated chains - for Multiple Chains scope |
+| `Chain Names` | input | `[ethereum]` (single), `[ethereum,binance]` (multiple), or `[*]` (all) |
+| `Description` | textarea | Optional description |
+
+### Chain Override Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `Chain Name` | input | Chain name (e.g., ethereum, binance, solana) |
 | `Description` | textarea | Optional description |
 
 ### How It Works
 
-1. **Create Issue** → Fill out the form and upload your custom logo
+1. **Create Issue** → Select template, fill form, upload custom logo
 2. **Auto-Processing** → Workflow downloads image, calculates hash
 3. **PR Created** → Pull request is created with override rules
-4. **Merge** → When PR is merged, `on-merge-override.yml` triggers
-5. **Manifest Updated** → Final manifest is regenerated with overrides
-
-### Example: Override USDT on All Chains
-
-```
-Input Type: Token Symbol
-Token Symbol: USDT
-Chain Scope: All Chains
-```
-
-This will create a PR that overrides USDT logo on **all chains** where USDT exists.
+4. **Merge** → When PR is merged, manifest is regenerated with overrides
 
 ## Commands
 
@@ -229,15 +231,26 @@ bun run typecheck
 
 ## GitHub Actions Workflows
 
-### process-override-issue.yml
+### process-token-override.yml
 
-Triggers when a new/edited Issue has "override" or "logo" label.
+Triggers when a new/edited Issue has `token-override` label.
 
 **Steps:**
 1. Parse issue form data
 2. Download attached image
 3. Calculate content hash
 4. Update `override.json`
+5. Create PR
+
+### process-chain-override.yml
+
+Triggers when a new/edited Issue has `chain-override` label.
+
+**Steps:**
+1. Parse issue form data
+2. Download attached image
+3. Calculate content hash
+4. Update `override.json` → `common.logo[chain]`
 5. Create PR
 
 ### on-merge-override.yml
@@ -312,13 +325,12 @@ const url = await getLogoUrl('ethereum', '0xdac17f958d2ee523a2206206994597c13d83
 ### Step 1: Create Issue
 
 1. Go to repository Issues → New Issue
-2. Select **Logo Override** template
+2. Select **Token Logo Override** or **Chain Logo Override** template
 3. Fill in the form:
-   - **Input Type**: Token Symbol (or Token Address)
-   - **Token Symbol**: USDT
-   - **Chain Scope**: All Chains (or specific chains)
-   - **Upload**: Drag & drop your logo image (PNG, max 256KB)
-4. Submit Issue
+   - **Token Override**: Input Type, Symbol/Address, Chain Names
+   - **Chain Override**: Chain Name
+4. Upload your logo image (PNG, JPG, GIF, WebP; max 256KB)
+5. Submit Issue
 
 ### Step 2: Review PR
 
