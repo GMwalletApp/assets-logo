@@ -8,6 +8,8 @@
     "generate:default": "bun run scripts/generate-default.ts",
     "generate:symbols": "bun run scripts/generate-symbols.ts",
     "apply:overrides": "bun run scripts/apply-overrides.ts",
+    "process:token-override": "bun run scripts/process-token-override.ts",
+    "process:chain-override": "bun run scripts/process-chain-override.ts",
     "sync:all": "bun run generate:default && bun run generate:symbols && bun run apply:overrides"
   },
   "devDependencies": {

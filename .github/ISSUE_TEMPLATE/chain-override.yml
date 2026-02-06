@@ -1,0 +1,27 @@
+name: Chain Logo Override
+description: Submit a custom logo override for a chain
+title: "[Chain Override] "
+labels: ["chain-override"]
+body:
+  - type: input
+    id: chain
+    attributes:
+      label: Chain Name
+      placeholder: "ethereum, binance, solana"
+      description: Enter the chain name
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Optional description for this override
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: "I confirm this logo is appropriate and follows the project's guidelines"
+          required: true

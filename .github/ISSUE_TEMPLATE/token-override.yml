@@ -1,7 +1,7 @@
-name: Logo Override
-description: Submit a custom logo override for a token or chain
-title: "[Override] "
-labels: ["override", "logo"]
+name: Token Logo Override
+description: Submit a custom logo override for a token
+title: "[Token Override] "
+labels: ["token-override"]
 body:
   - type: dropdown
     id: input_type
@@ -32,35 +32,14 @@ body:
     validations:
       required: false
 
-  - type: dropdown
-    id: chain_scope
-    attributes:
-      label: Which chains to apply?
-      options:
-        - Single Chain
-        - All Chains
-        - Multiple Chains
-      description: Select the scope of chains to apply this override
-    validations:
-      required: true
-
-  - type: input
-    id: chain
-    attributes:
-      label: Chain Name
-      placeholder: "ethereum, binance-smart-chain, tron"
-      description: Enter the single chain name
-    validations:
-      required: false
-
   - type: input
     id: chains
     attributes:
       label: Chain Names
-      placeholder: "ethereum, binance, tron (comma-separated)"
-      description: Enter multiple chain names separated by commas
+      placeholder: "[ethereum] (single), [ethereum,binance] (multiple), or [*] (all)"
+      description: Enter chain name(s). Use '*' for all chains.
     validations:
-      required: false
+      required: true
 
   - type: textarea
     id: description

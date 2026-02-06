@@ -14,9 +14,7 @@ interface IssueForm {
   input_type: string;
   symbol?: string;
   address?: string;
-  chain_scope: string;
-  chain?: string;
-  chains?: string;
+  chains: string;
   description?: string;
   issue_number?: string;
 }
@@ -57,19 +55,12 @@ function loadSymbolsMap(): Map<string, SymbolChainEntry[]> {
   return map;
 }
 
-async function saveLogoFile(hash: string, chain?: string, address?: string): Promise<string> {
+async function saveLogoFile(hash: string): Promise<string> {
   const logoFile = `${hash}.png`;
-  let destDir: string;
-
-  if (chain && address) {
-    destDir = join(OVERRIDES_DIR, 'blockchains', chain, address);
-  } else {
-    destDir = join(OVERRIDES_DIR, 'common');
-  }
+  const destDir = join(OVERRIDES_DIR, 'common');
+  const destPath = join(destDir, logoFile);
 
   mkdirSync(destDir, { recursive: true });
-
-  const destPath = join(destDir, logoFile);
 
   if (existsSync(destDir)) {
     const existingFiles = readdirSync(destDir).filter(f => f.endsWith('.png'));
@@ -102,16 +93,65 @@ function saveOverrideManifest(manifest: OverrideManifest): void {
   writeFileSync(OVERRIDE_JSON_PATH, content, 'utf-8');
 }
 
-function updateOverrideJsonForSymbol(
+type ChainScope = 'all' | 'single' | 'multiple';
+
+function parseChainsInput(input: string): { scope: ChainScope, chains: string[] } {
+  const trimmed = input.trim();
+
+  if (trimmed === '*') {
+    return { scope: 'all', chains: [] };
+  }
+
+  if (trimmed.includes(',')) {
+    const chains = trimmed.split(',').map(s => s.trim()).filter(Boolean);
+    return { scope: 'multiple', chains };
+  }
+
+  return { scope: 'single', chains: [trimmed] };
+}
+
+async function processTokenBySymbol(
   symbol: string,
-  chainScope: string,
-  chains: string[],
-  logoFile: string,
-  symbolChains: SymbolChainEntry[]
-): void {
+  chainsInput: string,
+  logoFile: string
+): Promise<ProcessResult> {
+  const symbolsMap = loadSymbolsMap();
+  const normalizedSymbol = symbol.toUpperCase().trim();
+  const symbolChains = symbolsMap.get(normalizedSymbol);
+
+  if (!symbolChains || symbolChains.length === 0) {
+    return {
+      success: false,
+      hash: '',
+      message: `Symbol "${symbol}" not found in symbols.json`,
+    };
+  }
+
+  console.log(`Found ${symbolChains.length} chains for ${symbol}`);
+
+  const { scope, chains: targetChains } = parseChainsInput(chainsInput);
+
+  let filteredChains: SymbolChainEntry[];
+
+  if (scope === 'all') {
+    filteredChains = symbolChains;
+    console.log(`Applying to all chains`);
+  } else {
+    filteredChains = symbolChains.filter(sc => targetChains.includes(sc.chain));
+    console.log(`Applying to chains: ${targetChains.join(', ')}`);
+
+    if (filteredChains.length === 0) {
+      return {
+        success: false,
+        hash: '',
+        message: `No matching chains found for "${chainsInput}"`,
+      };
+    }
+  }
+
   const manifest = loadOverrideManifest();
 
-  if (chainScope === 'All Chains') {
+  if (scope === 'all') {
     if (!manifest.common.token) {
       manifest.common.token = [];
     }
@@ -128,50 +168,60 @@ function updateOverrideJsonForSymbol(
       manifest.blockchains = {};
     }
 
-    for (const { chain, address } of symbolChains) {
-      if (chainScope === 'Single Chain') {
-        if (chains.includes(chain)) {
-          if (!manifest.blockchains[chain]) {
-            manifest.blockchains[chain] = {};
-          }
-          manifest.blockchains[chain][address] = logoFile;
-          console.log(`Added blockchains override for ${chain}/${address}`);
-        }
-      } else if (chainScope === 'Multiple Chains') {
-        if (chains.includes(chain)) {
-          if (!manifest.blockchains[chain]) {
-            manifest.blockchains[chain] = {};
-          }
-          manifest.blockchains[chain][address] = logoFile;
-          console.log(`Added blockchains override for ${chain}/${address}`);
-        }
+    for (const { chain, address } of filteredChains) {
+      if (!manifest.blockchains[chain]) {
+        manifest.blockchains[chain] = {};
       }
+      manifest.blockchains[chain][address] = logoFile;
+      console.log(`Added blockchains override for ${chain}/${address}`);
     }
   }
 
   saveOverrideManifest(manifest);
+
+  return {
+    success: true,
+    hash: logoFile.replace('.png', ''),
+    message: `Token override processed: ${logoFile}`,
+  };
 }
 
-function updateOverrideJsonForAddress(
-  chain: string,
+async function processTokenByAddress(
+  chainsInput: string,
   address: string,
   logoFile: string
-): void {
+): Promise<ProcessResult> {
+  const { scope, chains: targetChains } = parseChainsInput(chainsInput);
+
   const manifest = loadOverrideManifest();
 
   if (!manifest.blockchains) {
     manifest.blockchains = {};
   }
 
-  if (!manifest.blockchains[chain]) {
-    manifest.blockchains[chain] = {};
+  if (scope === 'all') {
+    return {
+      success: false,
+      hash: '',
+      message: 'Cannot use "*" for all chains when using Token Address mode. Use Token Symbol mode instead.',
+    };
   }
 
-  manifest.blockchains[chain][address] = logoFile;
+  for (const chain of targetChains) {
+    if (!manifest.blockchains[chain]) {
+      manifest.blockchains[chain] = {};
+    }
+    manifest.blockchains[chain][address.toLowerCase()] = logoFile;
+    console.log(`Added blockchains override for ${chain}/${address}`);
+  }
 
   saveOverrideManifest(manifest);
 
-  console.log(`Added blockchains override for ${chain}/${address}`);
+  return {
+    success: true,
+    hash: logoFile.replace('.png', ''),
+    message: `Token override processed: ${logoFile}`,
+  };
 }
 
 async function processIssue(form: IssueForm): Promise<ProcessResult> {
@@ -190,86 +240,45 @@ async function processIssue(form: IssueForm): Promise<ProcessResult> {
     console.log(`Processing ${form.input_type} override...`);
     console.log(`Logo hash: ${hash}`);
 
+    if (!form.chains) {
+      return {
+        success: false,
+        hash: '',
+        message: 'Chain name(s) is required',
+      };
+    }
+
+    let result: ProcessResult;
+
     if (form.input_type === 'Token Symbol') {
       if (!form.symbol) {
         return {
           success: false,
           hash: '',
-          message: 'Symbol is required',
-        };
-      }
-
-      const symbolsMap = loadSymbolsMap();
-      const normalizedSymbol = form.symbol.toUpperCase().trim();
-      const symbolChains = symbolsMap.get(normalizedSymbol);
-
-      if (!symbolChains || symbolChains.length === 0) {
-        return {
-          success: false,
-          hash: '',
-          message: `Symbol "${form.symbol}" not found in symbols.json`,
-        };
-      }
-
-      console.log(`Found ${symbolChains.length} chains for ${form.symbol}`);
-
-      let targetChains: string[] = [];
-
-      if (form.chain_scope === 'All Chains') {
-        targetChains = symbolChains.map(sc => sc.chain);
-      } else if (form.chain_scope === 'Single Chain') {
-        targetChains = form.chain ? [form.chain.trim()] : [];
-      } else if (form.chain_scope === 'Multiple Chains' && form.chains) {
-        targetChains = form.chains.split(',').map(s => s.trim()).filter(Boolean);
-      }
-
-      const filteredChains = symbolChains.filter(sc => targetChains.includes(sc.chain));
-
-      if (filteredChains.length === 0) {
-        return {
-          success: false,
-          hash: '',
-          message: `No matching chains found for symbol "${form.symbol}" with scope "${form.chain_scope}"`,
+          message: 'Symbol is required for Token Symbol mode',
         };
       }
 
       await saveLogoFile(hash);
-
-      updateOverrideJsonForSymbol(
-        form.symbol,
-        form.chain_scope,
-        targetChains,
-        logoFile,
-        filteredChains
-      );
-
+      result = await processTokenBySymbol(form.symbol, form.chains, logoFile);
     } else {
-      if (!form.chain || !form.address) {
+      if (!form.address) {
         return {
           success: false,
           hash: '',
-          message: 'Chain and address are required for Token Address mode',
+          message: 'Address is required for Token Address mode',
         };
       }
 
-      await saveLogoFile(hash, form.chain.trim(), form.address.trim());
-
-      updateOverrideJsonForAddress(
-        form.chain.trim(),
-        form.address.trim(),
-        logoFile
-      );
+      await saveLogoFile(hash);
+      result = await processTokenByAddress(form.chains, form.address, logoFile);
     }
 
     if (existsSync(TEMP_LOGO)) {
       rmSync(TEMP_LOGO);
     }
 
-    return {
-      success: true,
-      hash,
-      message: `Logo override processed: ${logoFile}`,
-    };
+    return result;
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -286,16 +295,14 @@ async function main() {
     input_type: process.env.INPUT_TYPE || '',
     symbol: process.env.SYMBOL || undefined,
     address: process.env.ADDRESS || undefined,
-    chain_scope: process.env.CHAIN_SCOPE || '',
-    chain: process.env.CHAIN || undefined,
-    chains: process.env.CHAINS || undefined,
+    chains: process.env.CHAINS || '',
     description: process.env.DESCRIPTION || undefined,
     issue_number: process.env.ISSUE_NUMBER || undefined,
   };
 
-  console.log('Processing issue override...');
+  console.log('Processing token override...');
   console.log(`Input Type: ${form.input_type}`);
-  console.log(`Chain Scope: ${form.chain_scope}`);
+  console.log(`Chains: ${form.chains}`);
 
   const result = await processIssue(form);
 
