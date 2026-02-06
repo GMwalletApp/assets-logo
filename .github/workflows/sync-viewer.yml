@@ -1,0 +1,31 @@
+name: Sync Viewer
+
+on:
+  schedule:
+    - cron: '0 6 * * 0'  # 每周日6点
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.metadata/manifests/latest.json'
+      - 'viewer/**'
+
+jobs:
+  sync-viewer:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy manifest to viewer
+        run: cp .metadata/manifests/latest.json viewer/manifest.json
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./viewer
+          cname: logos.example.com

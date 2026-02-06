@@ -11,7 +11,9 @@
     "check:overrides": "bun run scripts/check-overrides.ts",
     "deprecate": "bun run scripts/deprecate.ts",
     "deprecate:list": "bun run scripts/deprecate.ts --list",
-    "typecheck": "npx tsc --noEmit"
+    "typecheck": "npx tsc --noEmit",
+    "process:override": "bun run scripts/process-issue-override.ts",
+    "download:attachment": "bun run scripts/download-issue-attachment.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

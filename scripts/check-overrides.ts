@@ -21,7 +21,7 @@ async function checkOverrides(): Promise<OverrideChange[]> {
   console.log(`Checking ${overrides.length} override(s)...`);
 
   for (const { key, info } of overrides) {
-    const logoPath = join(__dirname, `../overrides/${info.chain}/${info.address}/logo.png`);
+    const logoPath = join(__dirname, `../overrides/${info.chain}/${info.address}/${info.hash}.png`);
 
     if (!existsSync(logoPath)) {
       console.log(`  [MISSING] ${key}: logo file not found`);

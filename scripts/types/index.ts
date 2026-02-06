@@ -8,9 +8,10 @@ export interface OverrideLogoInfo {
   chain: string;
   address: string;
   hash: string;
-  source: 'manual' | 'auto-sync';
+  source: 'manual' | 'auto-sync' | 'issue-override';
   description?: string;
   lastModified: string;
+  issueNumber?: string;
 }
 
 export interface OverrideManifest {
