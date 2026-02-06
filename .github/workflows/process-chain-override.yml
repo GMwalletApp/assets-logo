@@ -1,13 +1,19 @@
 name: Process Chain Override Issue
 
 on:
-  issues:
-    types: [opened, edited]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        required: true
+        type: string
+      comment_id:
+        required: false
+        type: string
 
 jobs:
   process-chain-override:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.labels.*.name, 'chain-override')
+    environment: override-chain
 
     steps:
       - name: Checkout repository
@@ -28,7 +34,7 @@ jobs:
         id: parse
         uses: peter-murray/issue-forms-body-parser@v2
         with:
-          issue_id: ${{ github.event.issue.number }}
+          issue_id: ${{ github.event.inputs.issue_number }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate Required Fields
@@ -43,7 +49,7 @@ jobs:
 
       - name: Download Issue Attachment
         env:
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           bun run scripts/download-issue-attachment.ts
@@ -60,7 +66,7 @@ jobs:
         env:
           CHAIN: ${{ env.chain }}
           DESCRIPTION: ${{ steps.parse.outputs.description || '' }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
         run: |
           bun run scripts/process-chain-override.ts
 
@@ -75,21 +81,21 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "feat: Add chain logo override for ${{ env.chain }}
 
-            Created from Issue #${{ github.event.issue.number }}"
+            Created from Issue #${{ github.event.inputs.issue_number }}"
           fi
 
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
-          title: "feat: Add chain logo override for ${{ env.chain }} from Issue #${{ github.event.issue.number }}"
+          title: "feat: Add chain logo override for ${{ env.chain }} from Issue #${{ github.event.inputs.issue_number }}"
           body: |
             ## Chain Logo Override
 
             - **Chain**: ${{ env.chain }}
             - **Description**: ${{ steps.parse.outputs.description || 'N/A' }}
 
-            Created from Issue #${{ github.event.issue.number }}
+            Created from Issue #${{ github.event.inputs.issue_number }}
 
             ---
 
@@ -104,7 +110,7 @@ jobs:
         with:
           script: |
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: ${{ github.event.inputs.issue_number }},
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: '✅ Chain logo override has been processed! A pull request has been created: ' +

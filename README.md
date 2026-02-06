@@ -183,9 +183,11 @@ You can submit logo overrides via GitHub Issues using one of two templates:
 ### How It Works
 
 1. **Create Issue** → Select template, fill form, upload custom logo
-2. **Auto-Processing** → Workflow downloads image, calculates hash
-3. **PR Created** → Pull request is created with override rules
-4. **Merge** → When PR is merged, manifest is regenerated with overrides
+2. **Add Label** → Template auto-adds `token-override` or `chain-override` label
+3. **Comment** → Comment `/process token-override` or `/process chain-override`
+4. **Processing** → Workflow downloads image, calculates hash
+5. **PR Created** → Pull request is created with override rules
+6. **Merge** → When PR is merged, manifest is updated automatically
 
 ## Commands
 
@@ -231,9 +233,24 @@ bun run typecheck
 
 ## GitHub Actions Workflows
 
+### on-issue-comment.yml
+
+Listens for `/process token-override` or `/process chain-override` comments on issues.
+
+**Triggers:**
+- Comment on issue starting with `/process token-override`
+- Comment on issue starting with `/process chain-override`
+
+**Steps:**
+1. Verify issue has correct label
+2. Trigger respective workflow
+3. Comment result on issue
+
 ### process-token-override.yml
 
-Triggers when a new/edited Issue has `token-override` label.
+Processes token logo override requests. Triggered via workflow_dispatch from on-issue-comment.yml.
+
+**Trigger:** `workflow_dispatch` with `issue_number` input
 
 **Steps:**
 1. Parse issue form data
@@ -244,7 +261,9 @@ Triggers when a new/edited Issue has `token-override` label.
 
 ### process-chain-override.yml
 
-Triggers when a new/edited Issue has `chain-override` label.
+Processes chain logo override requests. Triggered via workflow_dispatch from on-issue-comment.yml.
+
+**Trigger:** `workflow_dispatch` with `issue_number` input
 
 **Steps:**
 1. Parse issue form data
@@ -332,17 +351,19 @@ const url = await getLogoUrl('ethereum', '0xdac17f958d2ee523a2206206994597c13d83
 4. Upload your logo image (PNG, JPG, GIF, WebP; max 256KB)
 5. Submit Issue
 
-### Step 2: Review PR
+### Step 2: Trigger Processing
 
-The workflow will:
-1. Download your image
-2. Calculate SHA256 hash
-3. Generate override rules
-4. Create a PR
+1. Template auto-adds label (`token-override` or `chain-override`)
+2. Comment on the issue:
+   - For token: `/process token-override`
+   - For chain: `/process chain-override`
+3. Workflow will process and create a PR
 
-### Step 3: Merge
+### Step 3: Review & Merge
 
-When the PR is merged, the final manifest will be updated automatically.
+1. Review the created PR
+2. Merge when ready
+3. Final manifest will be updated automatically
 
 ## Supported Chains
 
