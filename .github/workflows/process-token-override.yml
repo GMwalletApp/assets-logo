@@ -87,7 +87,7 @@ jobs:
         run: |
           source parsed.env
           if [ -n "$image" ]; then
-            echo "image_url=$image" >> $GITHUB_ENV
+            echo "image=$image" >> $GITHUB_ENV
             curl -L -o temp_logo.png "$image"
           else
             echo "Warning: No image provided"
@@ -130,11 +130,11 @@ jobs:
           body: |
             ## Token Logo Override
 
-            - **Input Type**: $input_type
-            - **Symbol**: ${token_symbol:-N/A}
-            - **Address**: ${token_address:-N/A}
-            - **Chains**: $chain_names
-            - **Image**: ${image:-N/A}
+            - **Input Type**: ${{ env.input_type }}
+            - **Symbol**: ${{ env.symbol || 'N/A' }}
+            - **Address**: ${{ env.address || 'N/A' }}
+            - **Chains**: ${{ env.chains }}
+            - **Image**: ${{ env.image || 'N/A' }}
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 
