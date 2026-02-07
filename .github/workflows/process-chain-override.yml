@@ -44,12 +44,11 @@ jobs:
       - name: Parse Issue Body
         id: parse
         run: |
-          echo "${{ steps.issue-body.outputs.body }}" | bun run scripts/parse-issue-body.ts chain > $GITHUB_OUTPUT
-          echo "result=$(cat $GITHUB_OUTPUT)" >> $GITHUB_OUTPUT
+          echo '${{ steps.issue-body.outputs.body }}' | bun run scripts/parse-issue-body.ts chain > parsed.json
 
       - name: Validate Required Fields
         env:
-          CHAIN_NAME: ${{ fromJson(steps.parse.outputs.result).chain_name }}
+          CHAIN_NAME: $(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).chain_name')
         run: |
           if [ -z "$CHAIN_NAME" ]; then
             echo "Error: Chain name is required"
@@ -75,9 +74,9 @@ jobs:
       - name: Process Logo
         env:
           CHAIN: ${{ env.chain }}
-          IMAGE_URL: ${{ fromJson(steps.parse.outputs.result).image || '' }}
-          ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
         run: |
+          IMAGE_URL=$(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || ""')
+          ISSUE_NUMBER="${{ github.event.inputs.issue_number }}"
           bun run scripts/process-chain-override.ts
 
       - name: Setup Git User
@@ -103,7 +102,7 @@ jobs:
             ## Chain Logo Override
 
             - **Chain**: ${{ env.chain }}
-            - **Image**: ${{ env.IMAGE_URL || 'N/A' }}
+            - **Image**: $(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || "N/A"')
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 
