@@ -27,7 +27,7 @@ body:
       required: true
 
   - type: input
-    id: symbol
+    id: token_symbol
     attributes:
       label: Token Symbol
       placeholder: "USDT, USDC, ETH"
@@ -36,7 +36,7 @@ body:
       required: false
 
   - type: input
-    id: address
+    id: token_address
     attributes:
       label: Token Address
       placeholder: "0xdac17f958d2ee523a2206206994597c13d831ec7"
@@ -45,7 +45,7 @@ body:
       required: false
 
   - type: input
-    id: chains
+    id: chain_names
     attributes:
       label: Chain Names
       placeholder: "[ethereum] (single), [ethereum,binance] (multiple), or [*] (all)"
@@ -54,56 +54,17 @@ body:
       required: true
 
   - type: textarea
-    id: description
+    id: reason
     attributes:
-      label: Description
-      description: Optional description for this override
-
-  - type: checkboxes
-    id: confirmations
-    attributes:
-      label: Confirmations
-      options:
-        - label: "I confirm this logo is appropriate and follows the project's guidelines"
-          required: true
-
-  - type: input
-    id: symbol
-    attributes:
-      label: Token Symbol
-      placeholder: "USDT, USDC, ETH"
-      description: Enter the token symbol (e.g., USDT, USDC)
+      label: Reason
+      description: Why are you submitting this override? (optional)
     validations:
       required: false
 
-  - type: input
-    id: address
-    attributes:
-      label: Token Address
-      placeholder: "0xdac17f958d2ee523a2206206994597c13d831ec7"
-      description: Enter the token contract address
-    validations:
-      required: false
-
-  - type: input
-    id: chains
-    attributes:
-      label: Chain Names
-      placeholder: "[ethereum] (single), [ethereum,binance] (multiple), or [*] (all)"
-      description: Enter chain name(s). Use '*' for all chains.
-    validations:
-      required: true
-
-  - type: textarea
-    id: description
-    attributes:
-      label: Description
-      description: Optional description for this override
-
   - type: checkboxes
-    id: confirmations
+    id: terms
     attributes:
-      label: Confirmations
+      label: Terms
       options:
         - label: "I confirm this logo is appropriate and follows the project's guidelines"
           required: true

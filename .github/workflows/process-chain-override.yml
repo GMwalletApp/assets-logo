@@ -38,13 +38,13 @@ jobs:
 
       - name: Validate Required Fields
         env:
-          CHAIN: ${{ steps.parse.outputs.chain }}
+          CHAIN_NAME: ${{ steps.parse.outputs.chain_name }}
         run: |
-          if [ -z "$CHAIN" ]; then
+          if [ -z "$CHAIN_NAME" ]; then
             echo "Error: Chain name is required"
             exit 1
           fi
-          echo "chain=$CHAIN" >> $GITHUB_ENV
+          echo "chain=$CHAIN_NAME" >> $GITHUB_ENV
 
       - name: Download Issue Attachment
         env:
@@ -64,7 +64,7 @@ jobs:
       - name: Process Logo
         env:
           CHAIN: ${{ env.chain }}
-          DESCRIPTION: ${{ steps.parse.outputs.description || '' }}
+          DESCRIPTION: ${{ steps.parse.outputs.reason || '' }}
           ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
         run: |
           bun run scripts/process-chain-override.ts
@@ -92,7 +92,7 @@ jobs:
             ## Chain Logo Override
 
             - **Chain**: ${{ env.chain }}
-            - **Description**: ${{ steps.parse.outputs.description || 'N/A' }}
+            - **Description**: ${{ steps.parse.outputs.reason || 'N/A' }}
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 
