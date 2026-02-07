@@ -106,8 +106,6 @@ jobs:
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           title: "feat: Add chain logo override for ${{ env.chain_name }} from Issue #${{ github.event.inputs.issue_number }}"
           body: |
