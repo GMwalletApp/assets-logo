@@ -4,7 +4,7 @@ const TEMPLATE_TYPE = process.argv[2] || 'chain';
 
 const CHAIN_FIELDS: Record<string, string> = {
   'Chain Name': 'chain_name',
-  'Reason': 'reason',
+  'Image': 'image',
   'Terms': 'terms',
 };
 
@@ -13,7 +13,7 @@ const TOKEN_FIELDS: Record<string, string> = {
   'Token Symbol': 'token_symbol',
   'Token Address': 'token_address',
   'Chain Names': 'chain_names',
-  'Reason': 'reason',
+  'Image': 'image',
   'Terms': 'terms',
 };
 
@@ -46,6 +46,9 @@ function parseIssueBody(body: string): Record<string, unknown> {
         }
       }
       result[fieldName] = checked;
+    } else if (fieldName === 'image') {
+      const imageMatch = value.match(/!\[.*?\]\((.+?)\)/);
+      result[fieldName] = imageMatch ? imageMatch[1] : value;
     } else {
       result[fieldName] = value;
     }

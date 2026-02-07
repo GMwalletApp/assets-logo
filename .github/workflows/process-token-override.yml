@@ -100,7 +100,7 @@ jobs:
           SYMBOL: ${{ env.symbol }}
           ADDRESS: ${{ env.address }}
           CHAINS: ${{ env.chains }}
-          DESCRIPTION: ${{ fromJson(steps.parse.outputs.result).reason || '' }}
+          IMAGE_URL: ${{ fromJson(steps.parse.outputs.result).image || '' }}
           ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
         run: |
           bun run scripts/process-token-override.ts
@@ -131,7 +131,7 @@ jobs:
             - **Symbol**: ${{ env.symbol || 'N/A' }}
             - **Address**: ${{ env.address || 'N/A' }}
             - **Chains**: ${{ env.chains }}
-            - **Description**: ${{ env.DESCRIPTION || 'N/A' }}
+            - **Image**: ${{ env.IMAGE_URL || 'N/A' }}
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 

@@ -75,7 +75,7 @@ jobs:
       - name: Process Logo
         env:
           CHAIN: ${{ env.chain }}
-          DESCRIPTION: ${{ fromJson(steps.parse.outputs.result).reason || '' }}
+          IMAGE_URL: ${{ fromJson(steps.parse.outputs.result).image || '' }}
           ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
         run: |
           bun run scripts/process-chain-override.ts
@@ -103,7 +103,7 @@ jobs:
             ## Chain Logo Override
 
             - **Chain**: ${{ env.chain }}
-            - **Description**: ${{ env.DESCRIPTION || 'N/A' }}
+            - **Image**: ${{ env.IMAGE_URL || 'N/A' }}
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 
