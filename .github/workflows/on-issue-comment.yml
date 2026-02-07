@@ -44,7 +44,7 @@ jobs:
               echo "Error: Issue does not have 'token-override' label"
               exit 1
             fi
-            echo "trigger-workflow=process-token-override" >> $GITHUB_OUTPUT
+            echo "trigger-workflow=process-token-override.yml" >> $GITHUB_OUTPUT
             echo "workflow-inputs={\"issue_number\":\"${{ github.event.issue.number }}\",\"comment_id\":\"${{ github.event.comment.id }}\"}" >> $GITHUB_OUTPUT
             echo "✅ Token override workflow will be triggered"
           elif [[ "$COMMENT_BODY" == "/process chain-override" ]]; then
@@ -52,7 +52,7 @@ jobs:
               echo "Error: Issue does not have 'chain-override' label"
               exit 1
             fi
-            echo "trigger-workflow=process-chain-override" >> $GITHUB_OUTPUT
+            echo "trigger-workflow=process-chain-override.yml" >> $GITHUB_OUTPUT
             echo "workflow-inputs={\"issue_number\":\"${{ github.event.issue.number }}\",\"comment_id\":\"${{ github.event.comment.id }}\"}" >> $GITHUB_OUTPUT
             echo "✅ Chain override workflow will be triggered"
           fi
