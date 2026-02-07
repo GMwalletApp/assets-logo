@@ -60,13 +60,13 @@ jobs:
 
       - name: Download Image from URL
         run: |
-          IMAGE_URL=$(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || ""')
+          IMAGE_URL=$(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || ""' | tr -d '\n\r')
           if [ -z "$IMAGE_URL" ]; then
             echo "Error: Image URL is required"
             exit 1
           fi
           echo "image_url=$IMAGE_URL" >> $GITHUB_ENV
-          IMAGE_URL="$IMAGE_URL" bun run scripts/download-image.ts
+          curl -L -o temp_logo.png "$IMAGE_URL"
 
       - name: Verify Downloaded Logo
         run: |
