@@ -44,7 +44,9 @@ jobs:
       - name: Parse Issue Body
         id: parse
         run: |
-          echo '${{ steps.issue-body.outputs.body }}' | bun run scripts/parse-issue-body.ts token > parsed.json
+          cat << 'EOF' | bun run scripts/parse-issue-body.ts token > parsed.json
+          ${{ steps.issue-body.outputs.body }}
+          EOF
 
       - name: Validate Required Fields
         id: validate
