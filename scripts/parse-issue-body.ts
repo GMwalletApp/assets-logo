@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 const TEMPLATE_TYPE = process.argv[2] || 'chain';
+const ENV_MODE = process.argv.includes('--env');
 
 const CHAIN_FIELDS: Record<string, string> = {
   'Chain Name': 'chain_name',
@@ -61,7 +62,17 @@ function main() {
   const stdin = readFileSync('/dev/stdin', 'utf-8');
   const parsed = parseIssueBody(stdin);
 
-  console.log(JSON.stringify(parsed));
+  if (ENV_MODE) {
+    for (const [key, value] of Object.entries(parsed)) {
+      if (typeof value === 'string') {
+        console.log(`${key}=${value}`);
+      } else if (typeof value === 'object' && value !== null) {
+        console.log(`${key}=${JSON.stringify(value)}`);
+      }
+    }
+  } else {
+    console.log(JSON.stringify(parsed));
+  }
 }
 
 main();

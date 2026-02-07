@@ -44,59 +44,58 @@ jobs:
       - name: Parse Issue Body
         id: parse
         run: |
-          cat << 'EOF' | bun run scripts/parse-issue-body.ts token > parsed.json
+          cat << 'EOF' | bun run scripts/parse-issue-body.ts token --env > parsed.env
           ${{ steps.issue-body.outputs.body }}
           EOF
+          source parsed.env
+          echo "input_type=$input_type"
+          echo "token_symbol=$token_symbol"
+          echo "chain_names=$chain_names"
 
       - name: Validate Required Fields
-        id: validate
-        env:
-          INPUT_TYPE: $(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).input_type')
-          SYMBOL: $(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).token_symbol')
-          ADDRESS: $(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).token_address')
-          CHAINS: $(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).chain_names')
         run: |
+          source parsed.env
           # Validate input type
-          if [ "$INPUT_TYPE" = "Token Symbol" ]; then
-            if [ -z "$SYMBOL" ]; then
+          if [ "$input_type" = "Token Symbol" ]; then
+            if [ -z "$token_symbol" ]; then
               echo "Error: Symbol is required when using Token Symbol input type"
               exit 1
             fi
           else
-            if [ -z "$ADDRESS" ]; then
+            if [ -z "$token_address" ]; then
               echo "Error: Address is required when using Token Address input type"
               exit 1
             fi
           fi
 
           # Validate chains
-          if [ -z "$CHAINS" ]; then
+          if [ -z "$chain_names" ]; then
             echo "Error: Chain name(s) is required"
             exit 1
           fi
 
-          echo "input_type=$INPUT_TYPE" >> $GITHUB_ENV
-          echo "symbol=$SYMBOL" >> $GITHUB_ENV
-          echo "address=$ADDRESS" >> $GITHUB_ENV
-          echo "chains=$CHAINS" >> $GITHUB_ENV
+          echo "input_type=$input_type" >> $GITHUB_ENV
+          echo "symbol=$token_symbol" >> $GITHUB_ENV
+          echo "address=$token_address" >> $GITHUB_ENV
+          echo "chains=$chain_names" >> $GITHUB_ENV
 
       - name: Download Image from URL
         run: |
-          IMAGE_URL=$(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || ""' | tr -d '\n\r')
-          if [ -z "$IMAGE_URL" ]; then
-            echo "Error: Image URL is required"
-            exit 1
+          source parsed.env
+          if [ -n "$image" ]; then
+            echo "image_url=$image" >> $GITHUB_ENV
+            curl -L -o temp_logo.png "$image"
+          else
+            echo "Warning: No image provided"
           fi
-          echo "image_url=$IMAGE_URL" >> $GITHUB_ENV
-          curl -L -o temp_logo.png "$IMAGE_URL"
 
       - name: Verify Downloaded Logo
         run: |
-          if [ ! -f "temp_logo.png" ]; then
-            echo "No image downloaded"
-            exit 1
+          if [ -f "temp_logo.png" ]; then
+            echo "Logo downloaded successfully"
+          else
+            echo "Warning: No logo downloaded"
           fi
-          echo "Logo downloaded successfully"
 
       - name: Process Logo
         env:
@@ -135,7 +134,7 @@ jobs:
             - **Symbol**: ${{ env.symbol || 'N/A' }}
             - **Address**: ${{ env.address || 'N/A' }}
             - **Chains**: ${{ env.chains }}
-            - **Image**: $(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || "N/A"')
+            - **Image**: ${{ env.image_url || 'N/A' }}
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 
@@ -163,4 +162,4 @@ jobs:
       - name: Clean up temp file
         if: always()
         run: |
-          rm -f temp_logo.png
+          rm -f temp_logo.png parsed.env

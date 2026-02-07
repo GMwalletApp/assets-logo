@@ -44,29 +44,31 @@ jobs:
       - name: Parse Issue Body
         id: parse
         run: |
-          cat << 'EOF' | bun run scripts/parse-issue-body.ts chain > parsed.json
+          cat << 'EOF' | bun run scripts/parse-issue-body.ts chain --env > parsed.env
           ${{ steps.issue-body.outputs.body }}
           EOF
+          source parsed.env
+          echo "chain_name=$chain_name"
+          echo "image=$image"
 
       - name: Validate Required Fields
-        env:
-          CHAIN_NAME: $(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).chain_name')
         run: |
-          if [ -z "$CHAIN_NAME" ]; then
+          source parsed.env
+          if [ -z "$chain_name" ]; then
             echo "Error: Chain name is required"
             exit 1
           fi
-          echo "chain=$CHAIN_NAME" >> $GITHUB_ENV
+          echo "chain=$chain_name" >> $GITHUB_ENV
 
       - name: Download Image from URL
         run: |
-          IMAGE_URL=$(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || ""' | tr -d '\n\r')
-          if [ -z "$IMAGE_URL" ]; then
+          source parsed.env
+          if [ -z "$image" ]; then
             echo "Error: Image URL is required"
             exit 1
           fi
-          echo "image_url=$IMAGE_URL" >> $GITHUB_ENV
-          curl -L -o temp_logo.png "$IMAGE_URL"
+          echo "image_url=$image" >> $GITHUB_ENV
+          curl -L -o temp_logo.png "$image"
 
       - name: Verify Downloaded Logo
         run: |
@@ -91,9 +93,10 @@ jobs:
 
       - name: Commit Changes
         run: |
+          source parsed.env
           git add overrides/
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "feat: Add chain logo override for ${{ env.chain }}
+            git commit -m "feat: Add chain logo override for $chain_name
 
             Created from Issue #${{ github.event.inputs.issue_number }}"
           fi
@@ -107,7 +110,7 @@ jobs:
             ## Chain Logo Override
 
             - **Chain**: ${{ env.chain }}
-            - **Image**: $(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || "N/A"')
+            - **Image**: ${{ env.image_url }}
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 
@@ -135,4 +138,4 @@ jobs:
       - name: Clean up temp file
         if: always()
         run: |
-          rm -f temp_logo.png
+          rm -f temp_logo.png parsed.env
