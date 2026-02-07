@@ -80,17 +80,20 @@ jobs:
           echo "address=$ADDRESS" >> $GITHUB_ENV
           echo "chains=$CHAINS" >> $GITHUB_ENV
 
-      - name: Download Issue Attachment
-        env:
-          ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download Image from URL
         run: |
-          bun run scripts/download-issue-attachment.ts
+          IMAGE_URL=$(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || ""')
+          if [ -z "$IMAGE_URL" ]; then
+            echo "Error: Image URL is required"
+            exit 1
+          fi
+          echo "image_url=$IMAGE_URL" >> $GITHUB_ENV
+          IMAGE_URL="$IMAGE_URL" bun run scripts/download-image.ts
 
       - name: Verify Downloaded Logo
         run: |
           if [ ! -f "temp_logo.png" ]; then
-            echo "No image attachment found in issue"
+            echo "No image downloaded"
             exit 1
           fi
           echo "Logo downloaded successfully"
@@ -101,9 +104,9 @@ jobs:
           SYMBOL: ${{ env.symbol }}
           ADDRESS: ${{ env.address }}
           CHAINS: ${{ env.chains }}
+          IMAGE_URL: ${{ env.image_url }}
+          ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
         run: |
-          IMAGE_URL=$(cat parsed.json | bun run -e 'JSON.parse(stdin.read()).image || ""')
-          ISSUE_NUMBER="${{ github.event.inputs.issue_number }}"
           bun run scripts/process-token-override.ts
 
       - name: Setup Git User
