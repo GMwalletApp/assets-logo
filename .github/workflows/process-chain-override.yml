@@ -35,7 +35,13 @@ jobs:
         with:
           issue_id: ${{ github.event.inputs.issue_number }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Debug Parsed Data
+        run: |
+          echo "==== DEBUG INFO ===="
+          echo "Issue Number: ${{ github.event.inputs.issue_number }}"
+          echo "Full JSON: ${{ toJson(steps.parse.outputs) }}"
+          echo "Chain Name Value: '${{ steps.parse.outputs.chain_name }}'"
+          echo "===================="
       - name: Validate Required Fields
         env:
           CHAIN_NAME: ${{ steps.parse.outputs.chain_name }}
