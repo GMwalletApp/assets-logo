@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Get Issue Labels
         id: labels
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { data: labels } = await github.rest.issues.listLabelsOnIssue({
@@ -59,7 +59,7 @@ jobs:
 
       - name: Trigger Workflow via API
         if: steps.trigger.outputs.trigger-workflow != ''
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
@@ -72,7 +72,7 @@ jobs:
 
       - name: Comment Result
         if: steps.trigger.outputs.trigger-workflow != ''
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.issues.createComment({
