@@ -9,7 +9,8 @@ on:
       comment_id:
         required: false
         type: string
-
+permissions:
+  issues: read
 jobs:
   process-chain-override:
     runs-on: ubuntu-latest
