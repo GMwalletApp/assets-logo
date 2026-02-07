@@ -9,6 +9,7 @@ on:
       comment_id:
         required: false
         type: string
+
 jobs:
   process-chain-override:
     runs-on: ubuntu-latest
@@ -28,18 +29,27 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Parse Issue Form
-        id: parse
-        uses: peter-murray/issue-forms-body-parser@v4
+      - name: Get Issue Body
+        id: issue-body
+        uses: actions/github-script@v8
         with:
-          issue_id: ${{ github.event.inputs.issue_number }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          separator: '###'
-          label_marker_start: '>>'
-          label_marker_end: '<<'
+          script: |
+            const { data } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.inputs.issue_number }}
+            });
+            core.setOutput('body', data.body);
+
+      - name: Parse Issue Body
+        id: parse
+        run: |
+          echo "${{ steps.issue-body.outputs.body }}" | bun run scripts/parse-issue-body.ts chain > $GITHUB_OUTPUT
+          echo "result=$(cat $GITHUB_OUTPUT)" >> $GITHUB_OUTPUT
+
       - name: Validate Required Fields
         env:
-          CHAIN_NAME: ${{ steps.parse.outputs.chain_name }}
+          CHAIN_NAME: ${{ fromJson(steps.parse.outputs.result).chain_name }}
         run: |
           if [ -z "$CHAIN_NAME" ]; then
             echo "Error: Chain name is required"
@@ -65,7 +75,7 @@ jobs:
       - name: Process Logo
         env:
           CHAIN: ${{ env.chain }}
-          DESCRIPTION: ${{ steps.parse.outputs.reason || '' }}
+          DESCRIPTION: ${{ fromJson(steps.parse.outputs.result).reason || '' }}
           ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
         run: |
           bun run scripts/process-chain-override.ts
@@ -93,7 +103,7 @@ jobs:
             ## Chain Logo Override
 
             - **Chain**: ${{ env.chain }}
-            - **Description**: ${{ steps.parse.outputs.reason || 'N/A' }}
+            - **Description**: ${{ env.DESCRIPTION || 'N/A' }}
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 

@@ -29,23 +29,31 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Parse Issue Form
-        id: parse
-        uses: peter-murray/issue-forms-body-parser@v4
+      - name: Get Issue Body
+        id: issue-body
+        uses: actions/github-script@v8
         with:
-          issue_id: ${{ github.event.inputs.issue_number }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          separator: '###'
-          label_marker_start: '>>'
-          label_marker_end: '<<'
+          script: |
+            const { data } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.inputs.issue_number }}
+            });
+            core.setOutput('body', data.body);
+
+      - name: Parse Issue Body
+        id: parse
+        run: |
+          echo "${{ steps.issue-body.outputs.body }}" | bun run scripts/parse-issue-body.ts token > $GITHUB_OUTPUT
+          echo "result=$(cat $GITHUB_OUTPUT)" >> $GITHUB_OUTPUT
 
       - name: Validate Required Fields
         id: validate
         env:
-          INPUT_TYPE: ${{ steps.parse.outputs.input_type }}
-          SYMBOL: ${{ steps.parse.outputs.token_symbol }}
-          ADDRESS: ${{ steps.parse.outputs.token_address }}
-          CHAINS: ${{ steps.parse.outputs.chain_names }}
+          INPUT_TYPE: ${{ fromJson(steps.parse.outputs.result).input_type }}
+          SYMBOL: ${{ fromJson(steps.parse.outputs.result).token_symbol }}
+          ADDRESS: ${{ fromJson(steps.parse.outputs.result).token_address }}
+          CHAINS: ${{ fromJson(steps.parse.outputs.result).chain_names }}
         run: |
           # Validate input type
           if [ "$INPUT_TYPE" = "Token Symbol" ]; then
@@ -92,7 +100,7 @@ jobs:
           SYMBOL: ${{ env.symbol }}
           ADDRESS: ${{ env.address }}
           CHAINS: ${{ env.chains }}
-          DESCRIPTION: ${{ steps.parse.outputs.reason || '' }}
+          DESCRIPTION: ${{ fromJson(steps.parse.outputs.result).reason || '' }}
           ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
         run: |
           bun run scripts/process-token-override.ts
@@ -123,7 +131,7 @@ jobs:
             - **Symbol**: ${{ env.symbol || 'N/A' }}
             - **Address**: ${{ env.address || 'N/A' }}
             - **Chains**: ${{ env.chains }}
-            - **Description**: ${{ steps.parse.outputs.reason || 'N/A' }}
+            - **Description**: ${{ env.DESCRIPTION || 'N/A' }}
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 
