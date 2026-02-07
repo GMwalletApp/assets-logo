@@ -98,23 +98,18 @@ jobs:
           fi
 
       - name: Process Logo
-        env:
-          INPUT_TYPE: ${{ env.input_type }}
-          SYMBOL: ${{ env.symbol }}
-          ADDRESS: ${{ env.address }}
-          CHAINS: ${{ env.chains }}
-          IMAGE_URL: ${{ env.image_url }}
-          ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
         run: |
-          bun run scripts/process-token-override.ts
+          source parsed.env
+          INPUT_TYPE="$input_type" SYMBOL="$token_symbol" ADDRESS="$token_address" CHAINS="$chain_names" IMAGE_URL="${image:-}" bun run scripts/process-token-override.ts
 
       - name: Setup Git User
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit Changes
+      - name: Commit Changes and Create PR
         run: |
+          source parsed.env
           git add overrides/
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "feat: Add token logo override
@@ -122,19 +117,20 @@ jobs:
             Created from Issue #${{ github.event.inputs.issue_number }}"
           fi
 
+          git push origin HEAD:token-override/issue-${{ github.event.inputs.issue_number }}
+
       - name: Create Pull Request
-        id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
           title: "feat: Add token logo override from Issue #${{ github.event.inputs.issue_number }}"
           body: |
             ## Token Logo Override
 
-            - **Input Type**: ${{ env.input_type }}
-            - **Symbol**: ${{ env.symbol || 'N/A' }}
-            - **Address**: ${{ env.address || 'N/A' }}
-            - **Chains**: ${{ env.chains }}
-            - **Image**: ${{ env.image_url || 'N/A' }}
+            - **Input Type**: $input_type
+            - **Symbol**: ${token_symbol:-N/A}
+            - **Address**: ${token_address:-N/A}
+            - **Chains**: $chain_names
+            - **Image**: ${image:-N/A}
 
             Created from Issue #${{ github.event.inputs.issue_number }}
 
