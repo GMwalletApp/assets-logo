@@ -81,7 +81,7 @@ jobs:
       - name: Process Logo
         run: |
           source parsed.env
-          CHAIN="$chain_name" IMAGE_URL="$image" bun run scripts/process-chain-override.ts
+          CHAIN_NAME="$chain_name" ISSUE_NUMBER="${{ github.event.inputs.issue_number }}" bun run scripts/process-chain-override.ts
 
       - name: Setup Git User
         run: |

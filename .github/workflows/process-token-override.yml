@@ -100,7 +100,7 @@ jobs:
       - name: Process Logo
         run: |
           source parsed.env
-          INPUT_TYPE="$input_type" SYMBOL="$token_symbol" ADDRESS="$token_address" CHAINS="$chain_names" IMAGE_URL="${image:-}" bun run scripts/process-token-override.ts
+          INPUT_TYPE="$input_type" SYMBOL="$token_symbol" ADDRESS="$token_address" CHAINS="$chain_names" ISSUE_NUMBER="${{ github.event.inputs.issue_number }}" bun run scripts/process-token-override.ts
 
       - name: Setup Git User
         run: |
