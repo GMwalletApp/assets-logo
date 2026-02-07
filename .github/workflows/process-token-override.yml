@@ -35,6 +35,9 @@ jobs:
         with:
           issue_id: ${{ github.event.inputs.issue_number }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          separator: '###'
+          label_marker_start: '>>'
+          label_marker_end: '<<'
 
       - name: Validate Required Fields
         id: validate

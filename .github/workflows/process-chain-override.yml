@@ -9,8 +9,6 @@ on:
       comment_id:
         required: false
         type: string
-permissions:
-  issues: read
 jobs:
   process-chain-override:
     runs-on: ubuntu-latest
@@ -36,13 +34,9 @@ jobs:
         with:
           issue_id: ${{ github.event.inputs.issue_number }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Debug Parsed Data
-        run: |
-          echo "==== DEBUG INFO ===="
-          echo "Issue Number: ${{ github.event.inputs.issue_number }}"
-          echo "Full JSON: ${{ toJson(steps.parse.outputs) }}"
-          echo "Chain Name Value: '${{ steps.parse.outputs.chain_name }}'"
-          echo "===================="
+          separator: '###'
+          label_marker_start: '>>'
+          label_marker_end: '<<'
       - name: Validate Required Fields
         env:
           CHAIN_NAME: ${{ steps.parse.outputs.chain_name }}

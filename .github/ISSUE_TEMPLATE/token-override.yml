@@ -18,7 +18,7 @@ body:
   - type: dropdown
     id: input_type
     attributes:
-      label: How to identify the token?
+      label: ">>input_type<<"
       options:
         - Token Symbol
         - Token Address
@@ -29,7 +29,7 @@ body:
   - type: input
     id: token_symbol
     attributes:
-      label: Token Symbol
+      label: ">>token_symbol<<"
       placeholder: "USDT, USDC, ETH"
       description: Enter the token symbol (e.g., USDT)
     validations:
@@ -38,7 +38,7 @@ body:
   - type: input
     id: token_address
     attributes:
-      label: Token Address
+      label: ">>token_address<<"
       placeholder: "0xdac17f958d2ee523a2206206994597c13d831ec7"
       description: Enter the token contract address
     validations:
@@ -47,7 +47,7 @@ body:
   - type: input
     id: chain_names
     attributes:
-      label: Chain Names
+      label: ">>chain_names<<"
       placeholder: "[ethereum] (single), [ethereum,binance] (multiple), or [*] (all)"
       description: Enter chain name(s). Use '*' for all chains.
     validations:
@@ -56,7 +56,7 @@ body:
   - type: textarea
     id: reason
     attributes:
-      label: Reason
+      label: ">>reason<<"
       description: Why are you submitting this override? (optional)
     validations:
       required: false
@@ -64,7 +64,7 @@ body:
   - type: checkboxes
     id: terms
     attributes:
-      label: Terms
+      label: ">>terms<<"
       options:
         - label: "I confirm this logo is appropriate and follows the project's guidelines"
           required: true

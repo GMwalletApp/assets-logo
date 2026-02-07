@@ -18,7 +18,7 @@ body:
   - type: input
     id: chain_name
     attributes:
-      label: Chain Name
+      label: ">>chain_name<<"
       placeholder: "ethereum, binance, base"
       description: Enter the blockchain chain name
     validations:
@@ -27,7 +27,7 @@ body:
   - type: textarea
     id: reason
     attributes:
-      label: Reason
+      label: ">>reason<<"
       description: Why are you submitting this override? (optional)
     validations:
       required: false
@@ -35,7 +35,7 @@ body:
   - type: checkboxes
     id: terms
     attributes:
-      label: Terms
+      label: ">>terms<<"
       options:
         - label: "I confirm this logo is appropriate and follows the project's guidelines"
           required: true
