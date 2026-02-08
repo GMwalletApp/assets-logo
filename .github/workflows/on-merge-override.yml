@@ -8,6 +8,10 @@ on:
       - 'default.json'
       - 'symbols.json'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   apply-overrides:
     if: github.event.pull_request.merged == true
