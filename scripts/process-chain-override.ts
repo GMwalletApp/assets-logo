@@ -39,21 +39,13 @@ function saveOverrideManifest(manifest: OverrideManifest): void {
   writeFileSync(OVERRIDE_JSON_PATH, content, 'utf-8');
 }
 
-async function saveLogoFile(hash: string): Promise<string> {
+async function saveLogoFile(hash: string, chainName: string): Promise<string> {
   const logoFile = `${hash}.png`;
-  const destDir = join(OVERRIDES_DIR, 'common');
+  const normalizedChain = chainName.toLowerCase().trim();
+  const destDir = join(OVERRIDES_DIR, 'blockchains', normalizedChain, 'logo');
   const destPath = join(destDir, logoFile);
 
   mkdirSync(destDir, { recursive: true });
-
-  if (existsSync(destDir)) {
-    const existingFiles = readdirSync(destDir).filter(f => f.endsWith('.png'));
-    for (const file of existingFiles) {
-      if (file !== logoFile) {
-        rmSync(join(destDir, file));
-      }
-    }
-  }
 
   copyFileSync(TEMP_LOGO, destPath);
   return logoFile;
@@ -65,14 +57,17 @@ async function processChain(
 ): Promise<ProcessResult> {
   const manifest = loadOverrideManifest();
 
-  if (!manifest.common.logo) {
-    manifest.common.logo = {};
+  if (!manifest.blockchains) {
+    manifest.blockchains = {};
   }
 
   const normalizedChain = chainName.toLowerCase().trim();
-  manifest.common.logo[normalizedChain] = logoFile;
+  if (!manifest.blockchains[normalizedChain]) {
+    manifest.blockchains[normalizedChain] = {};
+  }
+  manifest.blockchains[normalizedChain].logo = logoFile;
 
-  console.log(`Added common.logo override for chain: ${normalizedChain}`);
+  console.log(`Added blockchains.${normalizedChain}.logo override`);
 
   saveOverrideManifest(manifest);
 
@@ -107,7 +102,7 @@ async function processIssue(form: ChainIssueForm): Promise<ProcessResult> {
       };
     }
 
-    await saveLogoFile(hash);
+    await saveLogoFile(hash, form.chain_name);
     const result = await processChain(form.chain_name, logoFile);
 
     if (existsSync(TEMP_LOGO)) {

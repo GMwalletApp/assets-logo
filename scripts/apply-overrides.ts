@@ -144,7 +144,7 @@ async function applyOverrides(): Promise<void> {
       }
 
       for (const [address, logoFile] of Object.entries(chainManifest)) {
-        if (!address || !logoFile) continue;
+        if (!logoFile) continue;
         console.log(`    Override ${chain}/${address} -> ${logoFile}`);
 
         // Copy logo file from overrides/blockchains to output
