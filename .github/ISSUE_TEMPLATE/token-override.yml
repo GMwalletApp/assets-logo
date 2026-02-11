@@ -1,0 +1,70 @@
+name: Token Logo Override
+description: Submit a custom logo override for a token
+title: "[Token Override] "
+labels: ["token-override"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## How to Process
+
+        After submitting this issue, **comment `/process token-override`** to trigger the workflow.
+
+        The workflow will:
+        1. Download your logo
+        2. Calculate hash and save to `overrides/common/`
+        3. Create a PR with override rules
+
+  - type: dropdown
+    id: input_type
+    attributes:
+      label: How to identify the token?
+      options:
+        - Token Symbol
+        - Token Address
+      description: Choose how to identify the token you want to override
+    validations:
+      required: true
+
+  - type: input
+    id: token_symbol
+    attributes:
+      label: Token Symbol
+      placeholder: "USDT, USDC, ETH"
+      description: Enter the token symbol (e.g., USDT)
+    validations:
+      required: false
+
+  - type: input
+    id: token_address
+    attributes:
+      label: Token Address
+      placeholder: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+      description: Enter the token contract address
+    validations:
+      required: false
+
+  - type: input
+    id: chain_names
+    attributes:
+      label: Chain Names
+      placeholder: "[ethereum] (single), [ethereum,binance] (multiple), or [*] (all)"
+      description: Enter chain name(s). Use '*' for all chains.
+    validations:
+      required: true
+
+  - type: textarea
+    id: image
+    attributes:
+      label: Image
+      description: Drag and drop or paste your logo image
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Terms
+      options:
+        - label: "I confirm this logo is appropriate and follows the project's guidelines"
+          required: true

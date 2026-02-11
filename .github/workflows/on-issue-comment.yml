@@ -1,0 +1,83 @@
+name: Process Issue Comment
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  process-comment:
+    runs-on: ubuntu-latest
+    if: >
+      startsWith(github.event.comment.body, '/process token-override') ||
+      startsWith(github.event.comment.body, '/process chain-override')
+
+    steps:
+      - name: Get Issue Labels
+        id: labels
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            const labelNames = labels.map(l => l.name);
+            core.setOutput('has-token-override', labelNames.includes('token-override'));
+            core.setOutput('has-chain-override', labelNames.includes('chain-override'));
+            core.setOutput('label-names', JSON.stringify(labelNames));
+
+      - name: Check Comment and Trigger Workflow
+        id: trigger
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          HAS_TOKEN: ${{ steps.labels.outputs.has-token-override }}
+          HAS_CHAIN: ${{ steps.labels.outputs.has-chain-override }}
+        run: |
+          if [[ "$COMMENT_BODY" == "/process token-override" ]]; then
+            if [ "$HAS_TOKEN" != "true" ]; then
+              echo "Error: Issue does not have 'token-override' label"
+              exit 1
+            fi
+            echo "trigger-workflow=process-token-override.yml" >> $GITHUB_OUTPUT
+            echo "workflow-inputs={\"issue_number\":\"${{ github.event.issue.number }}\",\"comment_id\":\"${{ github.event.comment.id }}\"}" >> $GITHUB_OUTPUT
+            echo "✅ Token override workflow will be triggered"
+          elif [[ "$COMMENT_BODY" == "/process chain-override" ]]; then
+            if [ "$HAS_CHAIN" != "true" ]; then
+              echo "Error: Issue does not have 'chain-override' label"
+              exit 1
+            fi
+            echo "trigger-workflow=process-chain-override.yml" >> $GITHUB_OUTPUT
+            echo "workflow-inputs={\"issue_number\":\"${{ github.event.issue.number }}\",\"comment_id\":\"${{ github.event.comment.id }}\"}" >> $GITHUB_OUTPUT
+            echo "✅ Chain override workflow will be triggered"
+          fi
+
+      - name: Trigger Workflow via API
+        if: steps.trigger.outputs.trigger-workflow != ''
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: '${{ steps.trigger.outputs.trigger-workflow }}',
+              ref: context.ref,
+              inputs: JSON.parse('${{ steps.trigger.outputs.workflow-inputs }}')
+            });
+
+      - name: Comment Result
+        if: steps.trigger.outputs.trigger-workflow != ''
+        uses: actions/github-script@v8
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🚀 ' + '${{ steps.trigger.outputs.trigger-workflow }}' + ' workflow has been triggered!'
+            })

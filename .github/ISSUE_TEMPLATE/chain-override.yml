@@ -1,0 +1,41 @@
+name: Chain Logo Override
+description: Submit a custom logo override for a blockchain chain
+title: "[Chain Override] "
+labels: ["chain-override"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## How to Process
+
+        After submitting this issue, **comment `/process chain-override`** to trigger the workflow.
+
+        The workflow will:
+        1. Download your logo
+        2. Calculate hash and save to `overrides/common/`
+        3. Create a PR with override rules
+
+  - type: input
+    id: chain_name
+    attributes:
+      label: Chain Name
+      placeholder: "ethereum, binance, base"
+      description: Enter the blockchain chain name
+    validations:
+      required: true
+
+  - type: textarea
+    id: image
+    attributes:
+      label: Image
+      description: Drag and drop or paste your logo image
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Terms
+      options:
+        - label: "I confirm this logo is appropriate and follows the project's guidelines"
+          required: true

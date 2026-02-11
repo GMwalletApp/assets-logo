@@ -1,5 +1,5 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadManifest, saveManifest, incrementVersion, generateVersion } from './utils/manifest.js';
@@ -19,9 +19,98 @@ interface SyncResult {
   reason?: string;
 }
 
-function getDestPath(chain: string, address: string, hash: string): string {
-  const dir = join(BLOCKCHAINS_DIR, chain, address === 'native' ? 'native' : address);
-  return join(dir, `${hash}.png`);
+function getDestPath(chain: string, hash: string): string {
+  return join(BLOCKCHAINS_DIR, chain, `${hash}.png`);
+}
+
+async function syncChain(chain: string, provider: any, manifest: any, options: SyncOptions): Promise<SyncResult[]> {
+  const results: SyncResult[] = [];
+  const chainLogos = await provider.getChainLogos(chain);
+  
+  if (!chainLogos) {
+    return results;
+  }
+
+  console.log(`\nSyncing ${chain}...`);
+
+  if (!manifest.logos[chain]) {
+    manifest.logos[chain] = {};
+  }
+
+  // Process chain logo (stored as 'logo' in manifest)
+  const chainLogoHash = chainLogos.chain.logo ? await computeFileHash(chainLogos.chain.logo) : null;
+  if (chainLogoHash) {
+    const existingHash = manifest.logos[chain].logo;
+    const destPath = getDestPath(chain, chainLogoHash);
+    const exists = existsSync(destPath);
+    
+    if (existingHash !== chainLogoHash) {
+      if (!options.dryRun) {
+        await mkdir(join(destPath, '..'), { recursive: true });
+        await writeFile(destPath, chainLogos.chain.logo);
+      }
+      manifest.logos[chain].logo = `${chainLogoHash}.png`;
+      console.log(`  [${exists ? '~' : '+'}] logo: ${chainLogoHash}.png`);
+      results.push({
+        success: true,
+        chain,
+        address: 'logo',
+        hash: chainLogoHash,
+        type: exists ? 'updated' : 'added',
+      });
+    }
+  }
+
+  // Process native logo (stored as 'native' in manifest)
+  if (chainLogos.native) {
+    const nativeHash = await computeFileHash(chainLogos.native.logo);
+    const existingHash = manifest.logos[chain].native;
+    const destPath = getDestPath(chain, nativeHash);
+    const exists = existsSync(destPath);
+    
+    if (existingHash !== nativeHash) {
+      if (!options.dryRun) {
+        await mkdir(join(destPath, '..'), { recursive: true });
+        await writeFile(destPath, chainLogos.native.logo);
+      }
+      manifest.logos[chain].native = `${nativeHash}.png`;
+      console.log(`  [${exists ? '~' : '+'}] native (${chainLogos.native.symbol}): ${nativeHash}.png`);
+      results.push({
+        success: true,
+        chain,
+        address: 'native',
+        hash: nativeHash,
+        type: exists ? 'updated' : 'added',
+      });
+    }
+  }
+
+  // Process token logos
+  for (const token of chainLogos.tokens) {
+    const tokenHash = await computeFileHash(token.logo);
+    const existingHash = manifest.logos[chain][token.address];
+    const destPath = getDestPath(chain, tokenHash);
+    const exists = existsSync(destPath);
+    
+    if (existingHash !== tokenHash) {
+      if (!options.dryRun) {
+        await mkdir(join(destPath, '..'), { recursive: true });
+        await writeFile(destPath, token.logo);
+      }
+      manifest.logos[chain][token.address] = `${tokenHash}.png`;
+      const symbol = token.symbol || token.address;
+      console.log(`  [${exists ? '~' : '+'}] ${symbol}: ${tokenHash}.png`);
+      results.push({
+        success: true,
+        chain,
+        address: token.address,
+        hash: tokenHash,
+        type: exists ? 'updated' : 'added',
+      });
+    }
+  }
+
+  return results;
 }
 
 async function syncLogos(options: SyncOptions = {}): Promise<SyncResult[]> {
@@ -44,64 +133,18 @@ async function syncLogos(options: SyncOptions = {}): Promise<SyncResult[]> {
     console.log('[DRY RUN - No files will be written]');
   }
 
-  // Get all tokens from provider (full sync)
-  const tokenList = await provider.listLogos(null);
-
-  const chains = Object.keys(tokenList);
+  const chains = await provider.listChains();
 
   if (chains.length === 0) {
-    console.log('No logos found in provider.');
+    console.log('No chains found.');
     return [];
   }
 
-  console.log(`Found ${chains.length} chain(s) with logos.`);
+  console.log(`Found ${chains.length} chain(s).`);
 
   for (const chain of chains) {
-    console.log(`\nSyncing ${chain}...`);
-
-    const tokens = tokenList[chain] || [];
-
-    for (const address of tokens) {
-      const key = `${chain}/${address}`;
-      const existingHash = manifest.logos[key];
-
-      // Get remote logo
-      const logo = await provider.getFile(chain, address);
-      if (!logo) {
-        continue;
-      }
-
-      const remoteHash = await computeFileHash(logo);
-
-      // Skip if already synced with same hash
-      if (existingHash === remoteHash) {
-        console.log(`  [OK] ${key}`);
-        continue;
-      }
-
-      const destPath = getDestPath(chain, address, remoteHash);
-      const exists = existsSync(destPath);
-
-      if (!options.dryRun) {
-        await mkdir(join(destPath, '..'), { recursive: true });
-        await writeFile(destPath, logo);
-      }
-
-      manifest.logos[key] = remoteHash;
-
-      const result: SyncResult = {
-        success: true,
-        chain,
-        address,
-        hash: remoteHash,
-        type: exists ? 'updated' : 'added',
-      };
-
-      results.push(result);
-
-      const symbol = result.type === 'added' ? '[+]' : '[~]';
-      console.log(`  ${symbol} ${key}: ${remoteHash}`);
-    }
+    const chainResults = await syncChain(chain, provider, manifest, options);
+    results.push(...chainResults);
   }
 
   if (!options.dryRun && results.length > 0) {
@@ -146,7 +189,7 @@ async function syncFromChanges(changes: LogoChange[], options: SyncOptions = {})
     }
 
     const hash = await computeFileHash(logo);
-    const destPath = getDestPath(change.chain, change.address, hash);
+    const destPath = getDestPath(change.chain, hash);
     const exists = existsSync(destPath);
 
     if (!options.dryRun) {
@@ -154,7 +197,10 @@ async function syncFromChanges(changes: LogoChange[], options: SyncOptions = {})
       await writeFile(destPath, logo);
     }
 
-    manifest.logos[`${change.chain}/${change.address}`] = hash;
+    if (!manifest.logos[change.chain]) {
+      manifest.logos[change.chain] = {};
+    }
+    manifest.logos[change.chain][change.address] = `${hash}.png`;
 
     const result: SyncResult = {
       success: true,
@@ -167,7 +213,7 @@ async function syncFromChanges(changes: LogoChange[], options: SyncOptions = {})
     results.push(result);
 
     const symbol = result.type === 'added' ? '[+]' : '[~]';
-    console.log(`  ${symbol} ${change.chain}/${change.address}: ${hash}`);
+    console.log(`  ${symbol} ${change.chain}/${change.address}: ${hash}.png`);
   }
 
   if (!options.dryRun && results.length > 0) {

@@ -1,0 +1,140 @@
+name: Apply Overrides on Merge
+
+on:
+  pull_request:
+    types: [closed]
+    paths:
+      - 'overrides/**'
+      - 'default.json'
+      - 'symbols.json'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  apply-overrides:
+    if: github.event.pull_request.merged == true
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Check TrustWallet Updates
+        id: check-update
+        run: |
+          if [ -d ".trustwallet" ]; then
+            cd .trustwallet
+            git fetch origin main
+            if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+              echo "has_update=true" >> $GITHUB_OUTPUT
+            else
+              echo "has_update=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "has_update=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update Default & Symbols
+        if: steps.check-update.outputs.has_update == 'true'
+        run: |
+          bun run generate:default
+          bun run generate:symbols
+
+      - name: Apply Overrides
+        run: bun run apply:overrides
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit Manifest Update
+        run: |
+          git add default.json symbols.json .metadata/manifests/latest.json
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "chore: Update manifest with overrides
+
+            Applied from PR #${{ github.event.pull_request.number }}
+            Merged by: ${{ github.event.pull_request.merged_by.login }}"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Create Follow-up PR for Manifest
+        if: steps.check-update.outputs.has_update == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          title: "chore: Update manifest from TrustWallet"
+          body: |
+            ## Updates
+
+            - Updated from TrustWallet repository
+            - Applied logo overrides
+
+            ---
+
+            _This PR was automatically generated._
+          labels: "automated, manifest-update"
+          branch: "manifest-update/${{ github.run_id }}"
+          delete-branch: true
+
+      - name: Delete source branch
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{ github.token }}
+          branches: ${{ github.event.pull_request.head.ref }}
+
+      - name: Close related Issue
+        if: github.event.pull_request.merged == true
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const prTitle = context.payload.pull_request.title;
+            const prBody = context.payload.pull_request.body || '';
+            
+            let issueNumber = null;
+            
+            // 从 PR 标题提取 issue 编号
+            const titleMatch = prTitle.match(/from Issue #(\d+)/);
+            if (titleMatch) {
+              issueNumber = titleMatch[1];
+            } else {
+              // 从 PR body 提取
+              const bodyMatch = prBody.match(/Created from Issue #(\d+)/);
+              if (bodyMatch) {
+                issueNumber = bodyMatch[1];
+              }
+            }
+            
+            if (issueNumber) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                state: 'closed'
+              });
+              
+              await github.rest.issues.createComment({
+                issue_number: issueNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: 'This issue has been automatically closed as the associated PR #' + context.payload.pull_request.number + ' has been merged.'
+              });
+              
+              console.log('Closed issue #' + issueNumber);
+            } else {
+              console.log('No issue reference found in PR');
+            }

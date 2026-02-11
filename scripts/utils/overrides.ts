@@ -1,27 +1,27 @@
-import { existsSync, readFileSync, writeFileSync, mkdirSync, renameSync, rmSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync, renameSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { OverrideManifest, OverrideLogoInfo } from '../types/index.js';
+import type { OldOverrideManifest, OldOverrideLogoInfo } from '../types/index.js';
 import { computeFileHash } from './hash.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OVERRIDES_DIR = join(__dirname, '../../.overrides');
 const OVERRIDES_PATH = join(OVERRIDES_DIR, 'manifest.json');
 
-export function loadOverridesManifest(): OverrideManifest {
+export function loadOverridesManifest(): OldOverrideManifest {
   if (!existsSync(OVERRIDES_PATH)) {
     return { updatedAt: '', logos: {} };
   }
 
   try {
     const content = readFileSync(OVERRIDES_PATH, 'utf-8');
-    return JSON.parse(content) as OverrideManifest;
+    return JSON.parse(content) as OldOverrideManifest;
   } catch {
     return { updatedAt: '', logos: {} };
   }
 }
 
-export function saveOverridesManifest(manifest: OverrideManifest): void {
+export function saveOverridesManifest(manifest: OldOverrideManifest): void {
   const content = JSON.stringify(manifest, null, 2);
   writeFileSync(OVERRIDES_PATH, content, 'utf-8');
 }
@@ -144,7 +144,7 @@ export function checkOverrideUpdate(
   });
 }
 
-export function listOverrides(): Array<{ key: string; info: OverrideLogoInfo }> {
+export function listOverrides(): Array<{ key: string; info: OldOverrideLogoInfo }> {
   const manifest = loadOverridesManifest();
   return Object.entries(manifest.logos).map(([key, info]) => ({ key, info }));
 }

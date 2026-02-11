@@ -1,3 +1,27 @@
+export interface TokenInfo {
+  symbol?: string;
+  name?: string;
+}
+
+export interface ChainInfo {
+  name: string;
+  symbol: string;
+  logo?: Uint8Array;
+}
+
+export interface TokenLogoInfo {
+  address: string;
+  logo: Uint8Array;
+  symbol?: string;
+  name?: string;
+}
+
+export interface ChainLogoData {
+  chain: ChainInfo;
+  native: TokenLogoInfo | null;
+  tokens: TokenLogoInfo[];
+}
+
 export interface InitOptions {
   force?: boolean;
 }
@@ -40,6 +64,34 @@ export interface LogoProvider {
    * @returns The logo file content as Uint8Array, or null if not found
    */
   getFile(chain: string, address: string): Promise<Uint8Array | null>;
+
+  /**
+   * Get token metadata (symbol, name)
+   * @param chain - The blockchain name
+   * @param address - The token address or "native"
+   * @returns Token info with symbol and name, or null if not found
+   */
+  getTokenInfo(chain: string, address: string): Promise<TokenInfo | null>;
+
+  /**
+   * Get chain info (symbol, name) from info.json
+   */
+  getChainInfo(chain: string): Promise<ChainInfo | null>;
+
+  /**
+   * Get chain logo as Uint8Array
+   */
+  getChainLogo(chain: string): Promise<Uint8Array | null>;
+
+  /**
+   * Get all logos for a chain (chain logo + native + tokens)
+   */
+  getChainLogos(chain: string): Promise<ChainLogoData | null>;
+
+  /**
+   * List all chains that have logos
+   */
+  listChains(): Promise<string[]>;
 }
 
 export interface ProviderFactory {

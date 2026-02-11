@@ -1,10 +1,59 @@
 export interface LogoManifest {
   version: string;
   updatedAt: string;
-  logos: Record<string, string>;
+  logos: Record<string, ChainManifest>;
 }
 
-export interface OverrideLogoInfo {
+export interface ChainManifest {
+  logo?: string;
+  native?: string;
+  [address: string]: string | undefined;
+}
+
+export interface LogoManifestEntry {
+  hash: string;
+  symbol?: string;
+  name?: string;
+}
+
+export interface DefaultManifest {
+  version: string;
+  updatedAt: string;
+  logos: Record<string, ChainManifest>;
+}
+
+export interface SymbolMapping {
+  symbol: string;
+  chains: {
+    chain: string;
+    address: string;
+  }[];
+}
+
+export interface SymbolsManifest {
+  updatedAt: string;
+  symbols: SymbolMapping[];
+}
+
+export interface OverrideTokenRule {
+  symbol: string;
+  chains: string[];
+  logo: string;
+}
+
+export interface OverrideLogoRule {
+  [chain: string]: string;
+}
+
+export interface OverrideManifest {
+  common: {
+    token?: OverrideTokenRule[];
+    logo?: OverrideLogoRule;
+  };
+  blockchains?: Record<string, ChainManifest>;
+}
+
+export interface OldOverrideLogoInfo {
   chain: string;
   address: string;
   hash: string;
@@ -14,9 +63,9 @@ export interface OverrideLogoInfo {
   issueNumber?: string;
 }
 
-export interface OverrideManifest {
+export interface OldOverrideManifest {
   updatedAt: string;
-  logos: Record<string, OverrideLogoInfo>;
+  logos: Record<string, OldOverrideLogoInfo>;
 }
 
 export interface DeprecationInfo {
