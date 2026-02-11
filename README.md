@@ -146,7 +146,7 @@ The final manifest used by frontends. Contains full paths and combines defaults 
     "ethereum": {
       "logo": "blockchains/ethereum/356942065ff36a87.png",
       "native": "blockchains/ethereum/356942065ff36a87.png",
-      "0xdac17f958d2ee523a2206206994597c13d831ec7": "common/usdt-custom.png"
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": "overrides/common/usdt-custom.png"
     }
   }
 }

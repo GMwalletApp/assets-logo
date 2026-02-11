@@ -1,7 +1,6 @@
-import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, unlinkSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readFile, writeFile, mkdir, readdir, copyFile, unlink } from 'node:fs/promises';
 import { generateVersion } from './utils/manifest.js';
 import type { DefaultManifest, OverrideManifest, SymbolsManifest, ChainManifest } from './types/index.js';
 
@@ -69,9 +68,6 @@ async function applyOverrides(): Promise<void> {
   // Ensure output directory exists
   mkdirSync(OUTPUT_DIR, { recursive: true });
 
-  // Track copied files for cleanup
-  const copiedFiles: string[] = [];
-
   // Apply overrides.common.token (symbol-based cross-chain overrides)
   if (overrideManifest?.common?.token) {
     console.log('\nApplying common.token overrides...');
@@ -90,21 +86,11 @@ async function applyOverrides(): Promise<void> {
         if (chains.includes('*') || chains.includes(chain)) {
           console.log(`    Override ${chain}/${address} -> ${logoFile}`);
 
-          // Copy logo file from overrides/common to output
-          const srcPath = join(COMMON_DIR, logoFile);
-          const destPath = join(OUTPUT_DIR, 'common', logoFile);
-
-          if (existsSync(srcPath)) {
-            mkdirSync(join(destPath, '..'), { recursive: true });
-            copyFileSync(srcPath, destPath);
-            copiedFiles.push(destPath);
-
-            // Update manifest
-            if (!result.logos[chain]) {
-              result.logos[chain] = {};
-            }
-            result.logos[chain][address] = `common/${logoFile}`;
+          // Update manifest with overrides path
+          if (!result.logos[chain]) {
+            result.logos[chain] = {};
           }
+          result.logos[chain][address] = `overrides/common/${logoFile}`;
         }
       }
     }
@@ -116,20 +102,11 @@ async function applyOverrides(): Promise<void> {
     for (const [chain, logoFile] of Object.entries(overrideManifest.common.logo)) {
       console.log(`  Override chain ${chain} logo -> ${logoFile}`);
 
-      const srcPath = join(COMMON_DIR, logoFile);
-      const destPath = join(OUTPUT_DIR, 'common', logoFile);
-
-      if (existsSync(srcPath)) {
-        mkdirSync(join(destPath, '..'), { recursive: true });
-        copyFileSync(srcPath, destPath);
-        copiedFiles.push(destPath);
-
-        // Update manifest
-        if (!result.logos[chain]) {
-          result.logos[chain] = {};
-        }
-        result.logos[chain].logo = `common/${logoFile}`;
+      // Update manifest with overrides path
+      if (!result.logos[chain]) {
+        result.logos[chain] = {};
       }
+      result.logos[chain].logo = `overrides/common/${logoFile}`;
     }
   }
 
@@ -147,18 +124,8 @@ async function applyOverrides(): Promise<void> {
         if (!logoFile) continue;
         console.log(`    Override ${chain}/${address} -> ${logoFile}`);
 
-        // Copy logo file from overrides/blockchains to output
-        const srcPath = join(BLOCKCHAINS_OVERRIDE_DIR, chain, address, logoFile);
-        const destPath = join(OUTPUT_DIR, 'blockchains', chain, logoFile);
-
-        if (existsSync(srcPath)) {
-          mkdirSync(join(destPath, '..'), { recursive: true });
-          copyFileSync(srcPath, destPath);
-          copiedFiles.push(destPath);
-
-          // Update manifest
-          result.logos[chain][address] = `blockchains/${chain}/${logoFile}`;
-        }
+        // Update manifest with overrides path
+        result.logos[chain][address] = `overrides/blockchains/${chain}/${logoFile}`;
       }
     }
   }
@@ -171,28 +138,6 @@ async function applyOverrides(): Promise<void> {
   console.log(`Output: ${OUTPUT_PATH}`);
   console.log(`Version: ${result.version}`);
   console.log(`Total chains: ${Object.keys(result.logos).length}`);
-}
-
-async function cleanCommonDir(): Promise<void> {
-  const commonDir = join(OUTPUT_DIR, 'common');
-  if (existsSync(commonDir)) {
-    const files = await readdir(commonDir);
-    for (const file of files) {
-      await unlink(join(commonDir, file));
-    }
-    console.log(`Cleaned common directory`);
-  }
-}
-
-async function cleanBlockchainsDir(): Promise<void> {
-  const blockchainsDir = join(OUTPUT_DIR, 'blockchains');
-  if (existsSync(blockchainsDir)) {
-    const files = await readdir(blockchainsDir);
-    for (const file of files) {
-      await unlink(join(blockchainsDir, file));
-    }
-    console.log(`Cleaned blockchains directory`);
-  }
 }
 
 applyOverrides().catch(console.error);

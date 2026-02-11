@@ -66,7 +66,7 @@ export function setLogoHash(chain: string, address: string, hash: string): void 
     manifest.logos[chain] = {};
   }
   
-  manifest.logos[chain][address] = hash;
+  manifest.logos[chain][address] = `overrides/${hash}`;
   manifest.updatedAt = new Date().toISOString();
   saveManifest(manifest);
 }
@@ -84,7 +84,7 @@ export function setChainLogo(chain: string, hash: string): void {
     manifest.logos[chain] = {};
   }
   
-  manifest.logos[chain].logo = hash;
+  manifest.logos[chain].logo = `overrides/${hash}`;
   manifest.updatedAt = new Date().toISOString();
   saveManifest(manifest);
 }
@@ -96,7 +96,7 @@ export function setNativeLogo(chain: string, hash: string): void {
     manifest.logos[chain] = {};
   }
   
-  manifest.logos[chain].native = hash;
+  manifest.logos[chain].native = `overrides/${hash}`;
   manifest.updatedAt = new Date().toISOString();
   saveManifest(manifest);
 }

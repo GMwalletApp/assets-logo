@@ -61,7 +61,7 @@ jobs:
 
       - name: Commit Manifest Update
         run: |
-          git add default.json symbols.json .metadata/
+          git add default.json symbols.json .metadata/manifests/latest.json
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "chore: Update manifest with overrides
 
@@ -84,7 +84,14 @@ jobs:
             - Applied logo overrides
 
             ---
+
             _This PR was automatically generated._
           labels: "automated, manifest-update"
           branch: "manifest-update/${{ github.run_id }}"
           delete-branch: true
+
+      - name: Delete source branch
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{ github.token }}
+          branches: ${{ github.event.pull_request.head.ref }}

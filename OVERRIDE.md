@@ -220,6 +220,10 @@ When resolving a logo, the system checks in this order:
 3. `overrides/blockchains` (specific chain+address)
 4. `blockchains/` (default logos from trustwallet)
 
+The final manifest in `.metadata/manifests/latest.json` will use full paths pointing to the override files:
+- Override paths: `overrides/common/{hash}.png` or `overrides/blockchains/{chain}/{hash}.png`
+- Default paths: `blockchains/{chain}/{hash}.png`
+
 ## Example: Complete Override Setup
 
 ### Step 1: Add custom USDT logo
