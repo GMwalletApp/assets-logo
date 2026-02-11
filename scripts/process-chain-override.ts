@@ -42,7 +42,7 @@ function saveOverrideManifest(manifest: OverrideManifest): void {
 async function saveLogoFile(hash: string, chainName: string): Promise<string> {
   const logoFile = `${hash}.png`;
   const normalizedChain = chainName.toLowerCase().trim();
-  const destDir = join(OVERRIDES_DIR, 'blockchains', normalizedChain, 'logo');
+  const destDir = join(OVERRIDES_DIR, 'blockchains', normalizedChain);
   const destPath = join(destDir, logoFile);
 
   mkdirSync(destDir, { recursive: true });
