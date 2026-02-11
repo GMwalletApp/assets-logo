@@ -11,6 +11,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   apply-overrides:
@@ -95,3 +96,45 @@ jobs:
         with:
           github_token: ${{ github.token }}
           branches: ${{ github.event.pull_request.head.ref }}
+
+      - name: Close related Issue
+        if: github.event.pull_request.merged == true
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const prTitle = context.payload.pull_request.title;
+            const prBody = context.payload.pull_request.body || '';
+            
+            let issueNumber = null;
+            
+            // 从 PR 标题提取 issue 编号
+            const titleMatch = prTitle.match(/from Issue #(\d+)/);
+            if (titleMatch) {
+              issueNumber = titleMatch[1];
+            } else {
+              // 从 PR body 提取
+              const bodyMatch = prBody.match(/Created from Issue #(\d+)/);
+              if (bodyMatch) {
+                issueNumber = bodyMatch[1];
+              }
+            }
+            
+            if (issueNumber) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                state: 'closed'
+              });
+              
+              await github.rest.issues.createComment({
+                issue_number: issueNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '✅ 当关联的 PR #' + context.payload.pull_request.number + ' 合并后，此 issue 已自动关闭。'
+              });
+              
+              console.log('Closed issue #' + issueNumber);
+            } else {
+              console.log('No issue reference found in PR');
+            }
