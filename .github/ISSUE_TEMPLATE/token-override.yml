@@ -48,8 +48,8 @@ body:
     id: chain_names
     attributes:
       label: Chain Names
-      placeholder: "[ethereum] (single), [ethereum,binance] (multiple), or [*] (all)"
-      description: Enter chain name(s). Use '*' for all chains.
+      placeholder: "[ethereum] (single), [ethereum,binance] (multiple), or [ALL] (all)"
+      description: Enter chain name(s). Use 'ALL' for all chains.
     validations:
       required: true
 

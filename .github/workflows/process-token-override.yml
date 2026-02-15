@@ -48,10 +48,22 @@ jobs:
       - name: Parse Issue Body
         id: parse
         run: |
-          cat << 'EOF' | bun run scripts/parse-issue-body.ts token --env > parsed.env
+          set -a
+          source <(bun run scripts/parse-issue-body.ts token --env << 'EOF'
           ${{ steps.issue-body.outputs.body }}
           EOF
-          source parsed.env
+          )
+          set +a
+          
+          # 保存到文件供后续步骤使用（使用单引号避免 shell 展开）
+          {
+            echo "input_type='$input_type'"
+            echo "token_symbol='$token_symbol'"
+            echo "token_address='$token_address'"
+            echo "chain_names='$chain_names'"
+            echo "image='$image'"
+          } > parsed.env
+          
           echo "input_type=$input_type"
           echo "token_symbol=$token_symbol"
           echo "chain_names=$chain_names"

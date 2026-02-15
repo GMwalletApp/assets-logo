@@ -96,18 +96,19 @@ function saveOverrideManifest(manifest: OverrideManifest): void {
 type ChainScope = 'all' | 'single' | 'multiple';
 
 function parseChainsInput(input: string): { scope: ChainScope, chains: string[] } {
-  const trimmed = input.trim();
+  const trimmed = input.trim().toUpperCase();
 
-  if (trimmed === '*') {
+  if (trimmed === 'ALL') {
     return { scope: 'all', chains: [] };
   }
 
-  if (trimmed.includes(',')) {
-    const chains = trimmed.split(',').map(s => s.trim()).filter(Boolean);
+  const originalInput = input.trim();
+  if (originalInput.includes(',')) {
+    const chains = originalInput.split(',').map(s => s.trim()).filter(Boolean);
     return { scope: 'multiple', chains };
   }
 
-  return { scope: 'single', chains: [trimmed] };
+  return { scope: 'single', chains: [originalInput] };
 }
 
 async function processTokenBySymbol(

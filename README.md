@@ -127,7 +127,7 @@ Configuration file that defines override rules. This is where you specify which 
 | Section | Field | Description |
 |---------|-------|-------------|
 | `common.token` | `symbol` | Token symbol (e.g., "USDT") |
-| | `chains` | Array of chains or `["*"]` for all chains |
+| | `chains` | Array of chains or `["ALL"]` for all chains |
 | | `logo` | Filename in `overrides/common/` |
 | `common.logo` | `{chain}` | Chain branding logo → filename in `overrides/common/` |
 | `blockchains` | `{chain}` | Chain-specific overrides |
@@ -170,7 +170,7 @@ You can submit logo overrides via GitHub Issues using one of two templates:
 | `Input Type` | dropdown | "Token Symbol" or "Token Address" |
 | `Token Symbol` | input | Token symbol (e.g., USDT) - for Symbol mode |
 | `Token Address` | input | Contract address - for Address mode |
-| `Chain Names` | input | `[ethereum]` (single), `[ethereum,binance]` (multiple), or `[*]` (all) |
+| `Chain Names` | input | `[ethereum]` (single), `[ethereum,binance]` (multiple), or `[ALL]` (all) |
 | `Description` | textarea | Optional description |
 
 ### Chain Override Fields

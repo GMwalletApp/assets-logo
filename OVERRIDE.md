@@ -129,7 +129,7 @@ Override logos for tokens across multiple chains using symbol matching.
 | Field | Type | Description |
 |-------|------|-------------|
 | `symbol` | string | Token symbol (e.g., "USDT") |
-| `chains` | string[] | List of chains to apply, or `["*"]` for all chains |
+| `chains` | string[] | List of chains to apply, or `["ALL"]` for all chains |
 | `logo` | string | Filename in `overrides/common/` |
 
 **Example**: Override USDT on ethereum and binance chains
@@ -147,7 +147,7 @@ Override logos for tokens across multiple chains using symbol matching.
 ```json
 {
   "symbol": "USDC",
-  "chains": ["*"],
+  "chains": ["ALL"],
   "logo": "usdc-custom.png"
 }
 ```
@@ -265,5 +265,5 @@ This will replace USDT logos on ethereum, tron, and binance chains with your cus
 
 - Logo files must use hash-based naming: `{hash}.png`
 - Use `symbols.json` to find token addresses by symbol
-- The `chains` array supports `["*"]` to match all chains
+- The `chains` array supports `["ALL"]` to match all chains
 - All addresses in override.json should be lowercase

@@ -8,3 +8,5 @@ dist/
 *.swp
 *.swo
 .trustwallet/
+parsed.env
+temp_logo.png
