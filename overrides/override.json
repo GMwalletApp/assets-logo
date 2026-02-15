@@ -1,0 +1,13 @@
+{
+  "common": {
+    "token": [
+      {
+        "symbol": "USDT",
+        "chains": [
+          "*"
+        ],
+        "logo": "f3e609d62c2fbac4.png"
+      }
+    ]
+  }
+}
