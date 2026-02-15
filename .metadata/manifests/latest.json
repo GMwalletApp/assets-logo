@@ -1,6 +1,6 @@
 {
-  "version": "2026-02-15-03",
-  "updatedAt": "2026-02-15T12:48:23.367Z",
+  "version": "2026-02-15-02",
+  "updatedAt": "2026-02-15T13:16:58.438Z",
   "logos": {
     "acala": {
       "logo": "blockchains/acala/356942065ff36a87.png",
@@ -470,7 +470,7 @@
       "native": "blockchains/band/39f64ef01f9176a3.png"
     },
     "base": {
-      "logo": "blockchains/base/1609bdfb55dab790.png",
+      "logo": "overrides/blockchains/base/36139c4c6efbc9c4.png",
       "native": "blockchains/base/1609bdfb55dab790.png",
       "0x0000206329b97db379d5e1bf586bbdb969c63274": "blockchains/base/bc1aa80bb5b67dfe.png",
       "0x0028e1e60167b48a938b785aa5292917e7eaca8b": "blockchains/base/5ff2566142f5bd8e.png",
