@@ -1,6 +1,6 @@
 {
   "version": "2026-02-15-02",
-  "updatedAt": "2026-02-15T13:16:58.438Z",
+  "updatedAt": "2026-02-15T13:19:51.169Z",
   "logos": {
     "acala": {
       "logo": "blockchains/acala/356942065ff36a87.png",
@@ -29,7 +29,7 @@
       "native": "blockchains/akash/5cc60d19875df8eb.png"
     },
     "algorand": {
-      "312769": "blockchains/algorand/319d7f0221e94100.png",
+      "312769": "overrides/common/f3e609d62c2fbac4.png",
       "31566704": "blockchains/algorand/9447236d7301763c.png",
       "137594422": "blockchains/algorand/6c74b35da44ca88b.png",
       "logo": "blockchains/algorand/8a0776d710e86eba.png",
@@ -42,7 +42,7 @@
       "0x159df6b7689437016108a019fd5bef736bac692b6d4a1f10c941f6fbb9a74ca6::oft::cakeoft": "blockchains/aptos/30e4f3dc4d585111.png",
       "0x1f9dca8eb42832b9ea07a804d745ef08833051e0c75c45b82665ef6f6e7fac32::coin::t": "blockchains/aptos/e87d2c5a9a9c6214.png",
       "0x2305dd96edd8debb5a2049be54379c74e61b37ceb54a49bd7dee4726d2a6b689::coin::t": "blockchains/aptos/3d5bdeb21739afc6.png",
-      "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "blockchains/aptos/5b61102320277ed7.png",
+      "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "overrides/common/f3e609d62c2fbac4.png",
       "0x394205c024d8e932832deef4cbfc7d3bb17ff2e9dc184fa9609405c2836b94aa::coin::t": "blockchains/aptos/1c2c33b3aa85c0cd.png",
       "0x39d84c2af3b0c9895b45d4da098049e382c451ba63bec0ce0396ff7af4bb5dff::coin::t": "blockchains/aptos/4ebf8634f7f2f398.png",
       "0x407a220699982ebb514568d007938d2447d33667e4418372ffec1ddb24491b6c::coin::t": "blockchains/aptos/106a44580ed71c3a.png",
@@ -273,7 +273,7 @@
       "0xff7f8f301f7a706e3cfd3d2275f5dc0b9ee8009b": "blockchains/arbitrum/43ef40111198ae45.png",
       "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8": "blockchains/arbitrum/e782d87e8787a2e6.png",
       "0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0": "blockchains/arbitrum/e26cda269d5fbdd8.png",
-      "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9": "blockchains/arbitrum/bf6c3cab95c08647.png",
+      "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9": "overrides/common/f3e609d62c2fbac4.png",
       "0xa0b862f60edef4452f25b4160f177db44deb6cf1": "blockchains/arbitrum/d98a5a1532eefff3.png",
       "0xa150245f155778e749185c9446e9e59e406674ef": "blockchains/arbitrum/dc1dbb84c3cad9b5.png",
       "0xa24d9c43d64c76acd962003647fd43a85eb44db8": "blockchains/arbitrum/44db8423c566e2b7.png",
@@ -407,7 +407,7 @@
       "0x8a0cac13c7da965a312f08ea4229c37869e85cb9": "blockchains/avalanchec/9ef27bb355ab68f3.png",
       "0x8b82a291f83ca07af22120aba21632088fc92931": "blockchains/avalanchec/4b65e1ff041573ac.png",
       "0x8ebaf22b6f053dffeaf46f4dd9efa95d89ba8580": "blockchains/avalanchec/e26cda269d5fbdd8.png",
-      "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7": "blockchains/avalanchec/19fceaa7cff897cb.png",
+      "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7": "overrides/common/f3e609d62c2fbac4.png",
       "0x98443b96ea4b0858fdf3219cd13e98c7a4690588": "blockchains/avalanchec/31fa77e7309d14cf.png",
       "0x98a4d09036cc5337810096b1d004109686e56afc": "blockchains/avalanchec/545ef54b8ebd067c.png",
       "0x9c9e5fd8bbc25984b178fdce6117defa39d2db39": "blockchains/avalanchec/1a5ef7a302daeda2.png",
@@ -717,7 +717,7 @@
       "0xf7b0dd0b642a6ccc2fc4d8ffe2bffb0cac8c43c8": "blockchains/base/86e72c20cf735337.png",
       "0xfa980ced6895ac314e7de34ef1bfae90a5add21b": "blockchains/base/6dee78c53ffd6e1d.png",
       "0xfea9dcdc9e23a9068bf557ad5b186675c61d33ea": "blockchains/base/ee6fe23c20e49aae.png",
-      "0xfde4c96c8593536e31f229ea8f37b2ada2699bb2": "blockchains/base/1c2ecfc8c08a821a.png"
+      "0xfde4c96c8593536e31f229ea8f37b2ada2699bb2": "overrides/common/f3e609d62c2fbac4.png"
     },
     "binance": {
       "logo": "blockchains/binance/4135f6a88e8c8c62.png",
@@ -899,7 +899,7 @@
       "usdc-cd2": "blockchains/binance/3ddc778d6e8fe1cd.png",
       "usdh-5b5": "blockchains/binance/4098e2d61ae1d27e.png",
       "usdsb-1ac": "blockchains/binance/4c78860b257c9abe.png",
-      "usdt-6d8": "blockchains/binance/1c2ecfc8c08a821a.png",
+      "usdt-6d8": "overrides/common/f3e609d62c2fbac4.png",
       "vdx-a17": "blockchains/binance/0cde2e01699d0763.png",
       "vidt-f53": "blockchains/binance/dd576bcc34a02325.png",
       "vndc-db9": "blockchains/binance/a775374a4d726b38.png",
@@ -1004,7 +1004,7 @@
       "native": "blockchains/cardano/c7164a17474c8b77.png",
       "asset108xu02ckwrfc8qs9d97mgyh4kn8gdu9w8f5sxk": "blockchains/cardano/344b3222d186230e.png",
       "asset1fc7e54kds62yggplh0vs65vcgrmn5n577per23": "blockchains/cardano/69d23107d688588d.png",
-      "asset1l58ned7zvj57pxyp94kkqqyxvjelvtpcjjh743": "blockchains/cardano/087ada479ebef374.png",
+      "asset1l58ned7zvj57pxyp94kkqqyxvjelvtpcjjh743": "overrides/common/f3e609d62c2fbac4.png",
       "asset1wrng86n9sz6t5d0lemvudur4ul6mgduv0gzuj8": "blockchains/cardano/61882415b392ec19.png",
       "asset1zvn33mj5kzgxtct7jr5qjyefu9ewk22xp0s0yw": "blockchains/cardano/e7fa6b9381710dc9.png"
     },
@@ -1017,7 +1017,7 @@
       "0x27cd006548df7c8c8e9fdc4a67fa05c2e3ca5cf9": "blockchains/celo/dd5ec25c25b4d286.png",
       "0x456a3d042c0dbd3db53d5489e98dfb038553b0d0": "blockchains/celo/c3dd45414674f5a7.png",
       "0x471ece3750da237f93b8e339c536989b8978a438": "blockchains/celo/c5c94825d5ee9c97.png",
-      "0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e": "blockchains/celo/d4d42c8fe412c7cb.png",
+      "0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e": "overrides/common/f3e609d62c2fbac4.png",
       "0x4c35853a3b4e647fd266f4de678dcc8fec410bf6": "blockchains/celo/4b20de0364e20a10.png",
       "0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c": "blockchains/celo/84c2297698d7deb8.png",
       "0x6e512bfc33be36f2666754e996ff103ad1680cc9": "blockchains/celo/bf4089f07bf837b5.png",
@@ -1045,7 +1045,7 @@
       "logo": "blockchains/cfxevm/b4b2eec6a097699a.png",
       "native": "blockchains/cfxevm/b4b2eec6a097699a.png",
       "0xa47f43de2f9623acb395ca4905746496d2014d57": "blockchains/cfxevm/e2de81058ecd26eb.png",
-      "0xfe97e85d13abd9c1c33384e796f10b73905637ce": "blockchains/cfxevm/31c78ca30d2b1fdb.png"
+      "0xfe97e85d13abd9c1c33384e796f10b73905637ce": "overrides/common/f3e609d62c2fbac4.png"
     },
     "classic": {
       "logo": "blockchains/classic/fb97a335e2264c78.png",
@@ -1162,7 +1162,7 @@
       "0x02dccaf514c98451320a9365c5b46c61d3246ff3": "blockchains/cryptoorg/2a234f248866b262.png",
       "0x0e517979c2c1c1522ddb0c73905e0d39b3f990c0": "blockchains/cryptoorg/6f1d9ee2e4d3efab.png",
       "0x63888bafc5975630e4e5cf50c3845a3250115f64": "blockchains/cryptoorg/1e8a6ac952d7d96d.png",
-      "0x66e428c3f67a68878562e79a0234c1f83c208770": "blockchains/cryptoorg/3c9ac383426ba56a.png",
+      "0x66e428c3f67a68878562e79a0234c1f83c208770": "overrides/common/f3e609d62c2fbac4.png",
       "0x7d54f4e05f273a9317f723997612ed64ef53c900": "blockchains/cryptoorg/d05bfc214319f748.png",
       "0xbc6f24649ccd67ec42342accdceccb2efa27c9d9": "blockchains/cryptoorg/c74a7e867400257c.png",
       "0xa58e3aeaea3292c3e260378e55e9684c59e7a27a": "blockchains/cryptoorg/26bae251de29055a.png",
@@ -1221,7 +1221,7 @@
       "sfit-aebc90": "blockchains/elrond/87a6583f23cff151.png",
       "sfitwegld-934909": "blockchains/elrond/5d1f2a7ac683c134.png",
       "usdc-c76f1f": "blockchains/elrond/76b9cdd86e93cc23.png",
-      "usdt-f8c08c": "blockchains/elrond/1c2ecfc8c08a821a.png",
+      "usdt-f8c08c": "overrides/common/f3e609d62c2fbac4.png",
       "utk-2f80e9": "blockchains/elrond/22f010bac72375ef.png",
       "utkwegld-c960d1": "blockchains/elrond/bb903f417dea546e.png",
       "wegld-bd4d79": "blockchains/elrond/64b9e575bee6ce3d.png",
@@ -8178,7 +8178,7 @@
       "0xda32d3814b10aee35dcba4de4f6b2259916f9cbb": "blockchains/ethereum/bd904f48f9150632.png",
       "0xda4129919f964a3a526d3182bb03e6449e5a8872": "blockchains/ethereum/a1bbe5e80ed43bcc.png",
       "0xda5e1988097297dcdc1f90d4dfe7909e847cbef6": "blockchains/ethereum/4a33af68d9c0b522.png",
-      "0xdac17f958d2ee523a2206206994597c13d831ec7": "blockchains/ethereum/1c2ecfc8c08a821a.png",
+      "0xdac17f958d2ee523a2206206994597c13d831ec7": "overrides/common/f3e609d62c2fbac4.png",
       "0xdb096cc19b8227e2115855c5b39dcc247470013c": "blockchains/ethereum/07f7dfbe171a744d.png",
       "0xdb11f6fc8e16c02719e9c2eb3c4c762fee8f5c5b": "blockchains/ethereum/10227e3057bb97ca.png",
       "0xdb147d66851fa80cd40a51e81e16da26ba4ea6b0": "blockchains/ethereum/9ba629b0c1f1d77f.png",
@@ -8908,19 +8908,19 @@
       "busd": "blockchains/kava/5ec144de93c3df16.png",
       "hard": "blockchains/kava/c22c360ed6cfd761.png",
       "swp": "blockchains/kava/32469d176bd00f9a.png",
-      "usdt": "blockchains/kava/8b9caa41005f9d0c.png",
+      "usdt": "overrides/common/f3e609d62c2fbac4.png",
       "usdx": "blockchains/kava/e8c9c876de438833.png"
     },
     "kavaevm": {
       "logo": "blockchains/kavaevm/4988c6c9fe34d5f2.png",
       "native": "blockchains/kavaevm/4988c6c9fe34d5f2.png",
-      "0x919c1c267bc06a7039e03fcc2ef738525769109c": "blockchains/kavaevm/e2be40201f07af02.png",
+      "0x919c1c267bc06a7039e03fcc2ef738525769109c": "overrides/common/f3e609d62c2fbac4.png",
       "0xeb466342c4d449bc9f53a865d5cb90586f405215": "blockchains/kavaevm/66e31cdaf754e736.png"
     },
     "kcc": {
       "logo": "blockchains/kcc/f3e1558f23270af3.png",
       "native": "blockchains/kcc/f3e1558f23270af3.png",
-      "0x0039f574ee5cc39bdd162e9a88e3eb1f111baf48": "blockchains/kcc/82f4e7c4de0eb7f3.png",
+      "0x0039f574ee5cc39bdd162e9a88e3eb1f111baf48": "overrides/common/f3e609d62c2fbac4.png",
       "0x1b8e27aba297466fc6765ce55bd12a8e216759da": "blockchains/kcc/07a280bf0e6a8ce6.png",
       "0x2ca48b4eea5a731c2b54e7c3944dbdb87c0cfb6f": "blockchains/kcc/09e656c5579b0f6d.png",
       "0x4446fc4eb47f2f6586f9faab68b3498f86c07521": "blockchains/kcc/f3e1558f23270af3.png",
@@ -8997,7 +8997,7 @@
       "0x19c41ea77b34bbdee61c3a87a75d1abda2ed0be4": "blockchains/mantle/9ea3209e405c4871.png",
       "0x1aad217b8f78dba5e6693460e8470f8b1a3977f3": "blockchains/mantle/b49e3766627ee281.png",
       "0x1ac765b5bea23184802c7d2d497f7c33f1444a9e": "blockchains/mantle/de4d5806404a8f2e.png",
-      "0x201eba5cc46d216ce6dc03f6a759e8e766e956ae": "blockchains/mantle/1c2ecfc8c08a821a.png",
+      "0x201eba5cc46d216ce6dc03f6a759e8e766e956ae": "overrides/common/f3e609d62c2fbac4.png",
       "0x214151022c2a5e380ab80cdac31f23ae554a7345": "blockchains/mantle/51771eaa85d02ce2.png",
       "0x22e1991e5f82736a2a990322a46aac0e95826c5b": "blockchains/mantle/4504514e514cdbab.png",
       "0x2363fd1235c1b6d3a5088ddf8df3a0b3a30c5293": "blockchains/mantle/129a40d53055ac63.png",
@@ -9163,7 +9163,7 @@
     "moonriver": {
       "logo": "blockchains/moonriver/a21e25d457537c51.png",
       "native": "blockchains/moonriver/a21e25d457537c51.png",
-      "0xb44a9b6905af7c801311e8f4e76932ee959c663c": "blockchains/moonriver/ebfe7ae9ce59f4eb.png",
+      "0xb44a9b6905af7c801311e8f4e76932ee959c663c": "overrides/common/f3e609d62c2fbac4.png",
       "0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d": "blockchains/moonriver/631bf658e26bd94d.png"
     },
     "nano": {
@@ -9259,7 +9259,7 @@
     "okc": {
       "logo": "blockchains/okc/f64f70ba7b45754c.png",
       "native": "blockchains/okc/f64f70ba7b45754c.png",
-      "0x382bb369d343125bfb2117af9c149795c6c65c50": "blockchains/okc/bf6c3cab95c08647.png",
+      "0x382bb369d343125bfb2117af9c149795c6c65c50": "overrides/common/f3e609d62c2fbac4.png",
       "0x8f8526dbfd6e38e3d8307702ca8469bae6c56c15": "blockchains/okc/75689a47a50e9a86.png",
       "0xc946daf81b08146b1c7a8da2a851ddf2b3eaaf85": "blockchains/okc/e782d87e8787a2e6.png",
       "0xdf54b6c6195ea4d948d03bfd818d365cf175cfc2": "blockchains/okc/f64f70ba7b45754c.png"
@@ -9281,7 +9281,7 @@
       "logo": "blockchains/opbnb/33c0f62cd9bc5d3c.png",
       "native": "blockchains/opbnb/33c0f62cd9bc5d3c.png",
       "0x50c5725949a6f0c72e6c4a641f24049a917db0cb": "blockchains/opbnb/ef9e7577532b75c6.png",
-      "0x9e5aac1ba1a2e6aed6b32689dfcf62a509ca96f3": "blockchains/opbnb/f54da32c12e6ba03.png",
+      "0x9e5aac1ba1a2e6aed6b32689dfcf62a509ca96f3": "overrides/common/f3e609d62c2fbac4.png",
       "0xb01d49c26416a352fac4fbb3d555d5f2543e3247": "blockchains/opbnb/0dd384dedc566ced.png",
       "0xb97fe5f3e5bf1ddac8ea1d2fa77f0a45cdb1dcec": "blockchains/opbnb/0af57b39e5784379.png"
     },
@@ -9323,7 +9323,7 @@
       "0x9046d36440290ffde54fe0dd84db8b1cfee9107b": "blockchains/optimism/1cc38fb91b10b9ef.png",
       "0x920cf626a271321c151d027030d5d08af699456b": "blockchains/optimism/9dacad879f9c72df.png",
       "0x9485aca5bbbe1667ad97c7fe7c4531a624c8b1ed": "blockchains/optimism/6c131e7424560bf3.png",
-      "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58": "blockchains/optimism/caba3785ced9cd37.png",
+      "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58": "overrides/common/f3e609d62c2fbac4.png",
       "0x9560e827af36c94d2ac33a39bce1fe78631088db": "blockchains/optimism/0d87129810409eb3.png",
       "0x9bcef72be871e61ed4fbbc7630889bee758eb81d": "blockchains/optimism/ba08ae872c1fbae8.png",
       "0x9e1028f5f1d5ede59748ffcee5532509976840e0": "blockchains/optimism/a862ed78673a8435.png",
@@ -9592,7 +9592,7 @@
       "0xbfc70507384047aa74c29cdc8c5cb88d0f7213ac": "blockchains/polygon/86a0563b4ac385bd.png",
       "0xba0dda8762c24da9487f5fa026a9b64b695a07ea": "blockchains/polygon/e058f0ee44192a43.png",
       "0xc1c93d475dc82fe72dbc7074d55f5a734f8ceeae": "blockchains/polygon/1057218aa515a6c5.png",
-      "0xc2132d05d31c914a87c6611c10748aeb04b58e8f": "blockchains/polygon/1c2ecfc8c08a821a.png",
+      "0xc2132d05d31c914a87c6611c10748aeb04b58e8f": "overrides/common/f3e609d62c2fbac4.png",
       "0xc3fdbadc7c795ef1d6ba111e06ff8f16a20ea539": "blockchains/polygon/366751eab4944fda.png",
       "0xc48f61a288a08f1b80c2edd74652e1276b6a168c": "blockchains/polygon/450fb805e96a5bce.png",
       "0xc8bcb58caef1be972c0b638b1dd8b0748fdc8a44": "blockchains/polygon/ffd98e76990fdaca.png",
@@ -9624,7 +9624,7 @@
     "polygonzkevm": {
       "logo": "blockchains/polygonzkevm/40831d2b74964871.png",
       "native": "blockchains/polygonzkevm/40831d2b74964871.png",
-      "0x1e4a5963abfd975d8c9021ce480b42188849d41d": "blockchains/polygonzkevm/c44b2dd124e6d018.png",
+      "0x1e4a5963abfd975d8c9021ce480b42188849d41d": "overrides/common/f3e609d62c2fbac4.png",
       "0x22b21beddef74fe62f031d2c5c8f7a9f8a4b304d": "blockchains/polygonzkevm/f6b4e59544d18630.png",
       "0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9": "blockchains/polygonzkevm/026ed9518280a6da.png",
       "0x68286607a1d43602d880d349187c3c48c0fd05e6": "blockchains/polygonzkevm/978ebf1affe8177c.png",
@@ -9683,7 +9683,7 @@
       "0x9735fb1126b521a913697a541f768376011bccf9": "blockchains/scroll/ed298dbd0b3a0cad.png",
       "0xb755039edc7910c1f1bd985d48322e55a31ac0bf": "blockchains/scroll/8fc8782e9c8b6a81.png",
       "0xca77eb3fefe3725dc33bccb54edefc3d9f764f97": "blockchains/scroll/51b3274d310c72ed.png",
-      "0xf55bec9cafdbe8730f096aa55dad6d22d44099df": "blockchains/scroll/88ab16870542feb6.png",
+      "0xf55bec9cafdbe8730f096aa55dad6d22d44099df": "overrides/common/f3e609d62c2fbac4.png",
       "0xf610a9dfb7c89644979b4a0f27063e9e7d7cda32": "blockchains/scroll/336058e0bc141fd8.png",
       "0xf6718b2701d4a6498ef77d7c152b2137ab28b8a3": "blockchains/scroll/a985fb0f9890e951.png"
     },
@@ -10876,7 +10876,7 @@
       "0x55b370b704240a914f42b5bbb3195431c031f9f8": "blockchains/smartchain/76fbfe977584413a.png",
       "0x55b53855eae06c4744841dbfa06fce335db4355b": "blockchains/smartchain/30e4acb2dcd7b44e.png",
       "0x55f96c7005d7c684a65ee653b07b5fe1507c56ab": "blockchains/smartchain/35e5428f9b892d9a.png",
-      "0x55d398326f99059ff775485246999027b3197955": "blockchains/smartchain/1c2ecfc8c08a821a.png",
+      "0x55d398326f99059ff775485246999027b3197955": "overrides/common/f3e609d62c2fbac4.png",
       "0x56083560594e314b5cdd1680ec6a493bb851bbd8": "blockchains/smartchain/ad59d0130a3b1a78.png",
       "0x5610bf2bf5abe5750bdbce311631dee2afa2cd24": "blockchains/smartchain/c213e8c143089a2d.png",
       "0x5621737f42dae558b81269fcb9e9e70c19aa6b35": "blockchains/smartchain/b1dd79c1783a1df4.png",
@@ -13620,7 +13620,7 @@
       "eo8blxr7xtj54mnuxupr1yyqccv29al9g5osl61vpump": "blockchains/solana/1bf957751a0cb8c9.png",
       "eqeebghqhqy6sqeajcnqasns3qag19sdf89xsarpump": "blockchains/solana/154c83d6b1de76a9.png",
       "ersznwsamwjr9hj2o18glwvytkooygbdptjmjuv72x8a": "blockchains/solana/2c44bf08a0dafa21.png",
-      "es9vmfrzacermjfrf4h2fyd4kconky11mcce8benwnyb": "blockchains/solana/1c2ecfc8c08a821a.png",
+      "es9vmfrzacermjfrf4h2fyd4kconky11mcce8benwnyb": "overrides/common/f3e609d62c2fbac4.png",
       "esp4kjfkudlfx274wobsiiey74sh4tzkucdjfulhpump": "blockchains/solana/d5b1950040115063.png",
       "etbc6gkcvsb9c6f5wsbwg8wpjrqxmb5euptk6bqg1r4x": "blockchains/solana/b0c21b9fd1852afb.png",
       "evpufsbiks1b3gpbmvvuwac4dxabxd4zlder9svsef27": "blockchains/solana/81f59192f7ee143e.png",
@@ -13976,7 +13976,7 @@
       "0x486b6fa0419b33a0c7a6e4698c231d7e2f2d5299": "blockchains/sonic/badffcc003d79ffd.png",
       "0x50c42deacd8fc9773493ed674b675be577f2634b": "blockchains/sonic/228ddcb906c83063.png",
       "0x5af79133999f7908953e94b7a5cf367740ebee35": "blockchains/sonic/cb3b3de44cfefa7c.png",
-      "0x6047828dc181963ba44974801ff68e538da5eaf9": "blockchains/sonic/ade231c851c095b4.png",
+      "0x6047828dc181963ba44974801ff68e538da5eaf9": "overrides/common/f3e609d62c2fbac4.png",
       "0x63a522f6e7d5b96f7aebb74d2648545e9e14078d": "blockchains/sonic/4d019f731a399e11.png",
       "0x6881b80ea7c858e4aeef63893e18a8a36f3682f3": "blockchains/sonic/5a72beafa4c69a04.png",
       "0x6c9b3a74ae4779da5ca999371ee8950e8db3407f": "blockchains/sonic/cfee4e46d0a54d2d.png",
@@ -14033,7 +14033,7 @@
       "native": "blockchains/sui/4f8bdce8c8effcc5.png",
       "0x294de7579d55c110a00a7c4946e09a1b5cbeca2592fbb83fd7bfacba3cfeaf0e::drf::drf": "blockchains/sui/37a0ef3c2391a11b.png",
       "0x35169bc93e1fddfcf3a82a9eae726d349689ed59e4b065369af8789fe59f8608::mmt::mmt": "blockchains/sui/3acb33ff5486e926.png",
-      "0x375f70cf2ae4c00bf37117d0c85a2c71545e6ee05c4a5c7d282cd66a4504b068::usdt::usdt": "blockchains/sui/1c2ecfc8c08a821a.png",
+      "0x375f70cf2ae4c00bf37117d0c85a2c71545e6ee05c4a5c7d282cd66a4504b068::usdt::usdt": "overrides/common/f3e609d62c2fbac4.png",
       "0x506a6fc25f1c7d52ceb06ea44a3114c9380f8e2029b4356019822f248b49e411::memefi::memefi": "blockchains/sui/9c2a2db91fa3e894.png",
       "0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::coin": "blockchains/sui/574c579f66d222ea.png",
       "0x6864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::cetus": "blockchains/sui/d46ed5556ff4c888.png",
@@ -14286,7 +14286,7 @@
       "eqcvaf0jmrv6bovppagee08uqm_urpud__fha7nm8twzvbe_": "blockchains/ton/05dc355bcbc9aa53.png",
       "eqcvk4oq2l5yts_s7q4j08fb9ftzx3iy-7ui1aqssykgdt_i": "blockchains/ton/99afc21b9219aa9b.png",
       "eqcvxjy4eg8hyhbfsz7eepxrrsuqsfe_jpptraybmcg_dogs": "blockchains/ton/35585d738c045c34.png",
-      "eqcxe6mutqjkfngfarotkot1lzbdiix1kcixrv7nw2id_sds": "blockchains/ton/75ee239f6d9b50ad.png",
+      "eqcxe6mutqjkfngfarotkot1lzbdiix1kcixrv7nw2id_sds": "overrides/common/f3e609d62c2fbac4.png",
       "eqd-cvr0nz6xayrbvbhz-abtrrc6si5tvhvvpeqrav9uaad7": "blockchains/ton/f38bfe65b1a12fd9.png",
       "eqd0laik0fghv8anfrhebi8gdg2rpdykgxem0mbfya_ew1-8": "blockchains/ton/295ad8e781032dbd.png",
       "eqd0vdsa_nedr9uvbgn9eikrx-suesdxgefg69xqmavflqiw": "blockchains/ton/554d0d8521f4e1f4.png",
@@ -14569,7 +14569,7 @@
       "tqsm77pkjtpfawyu2luqvtkigqchpflbaw": "blockchains/tron/43866d335dd09ab3.png",
       "tqzrntjwkmnl1lup6fnzsdtagquc3zyk1k": "blockchains/tron/bc6a13a96cbfbb8e.png",
       "tr4rgmjvtjqkmgw3ncycnydy68ok39rwpg": "blockchains/tron/51771eaa85d02ce2.png",
-      "tr7nhqjekqxgtci8q8zy4pl8otszgjlj6t": "blockchains/tron/1c2ecfc8c08a821a.png",
+      "tr7nhqjekqxgtci8q8zy4pl8otszgjlj6t": "overrides/common/f3e609d62c2fbac4.png",
       "trctlnyrhbjngrmytx2nggsag1k8u7v557": "blockchains/tron/03433c502b1ec93b.png",
       "trxfha1owzvfk5ru7cmd5sxdx1uktccrjn": "blockchains/tron/fad3d31321dcf395.png",
       "trc8cqxxtxkufdpu4rkdhgkm5odqdzsqdz": "blockchains/tron/888abadb3fc4b1e0.png",
@@ -14749,7 +14749,7 @@
       "native": "blockchains/zklink/b1f880c7beca3d24.png",
       "0x000000000000000000000000000000000000800a": "blockchains/zklink/1e18174fb75e837a.png",
       "0x1a1a3b2ff016332e866787b311fcb63928464509": "blockchains/zklink/c1b40135357f3728.png",
-      "0x2f8a25ac62179b31d62d7f80884ae57464699059": "blockchains/zklink/a4d43f26377e2374.png",
+      "0x2f8a25ac62179b31d62d7f80884ae57464699059": "overrides/common/f3e609d62c2fbac4.png",
       "0xda4aaed3a53962c83b35697cd138cc6df43af71f": "blockchains/zklink/488ed9e5d7ca0871.png",
       "0xf573fa04a73d5ac442f3dea8741317feaa3cdeab": "blockchains/zklink/4ef96a4e1557f345.png"
     },
