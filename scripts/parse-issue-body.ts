@@ -65,9 +65,9 @@ function main() {
   if (ENV_MODE) {
     for (const [key, value] of Object.entries(parsed)) {
       if (typeof value === 'string') {
-        console.log(`${key}=${value}`);
+        console.log(`${key}='${value.replace(/'/g, "'\\''")}'`);
       } else if (typeof value === 'object' && value !== null) {
-        console.log(`${key}=${JSON.stringify(value)}`);
+        console.log(`${key}='${JSON.stringify(value).replace(/'/g, "'\\''")}'`);
       }
     }
   } else {
