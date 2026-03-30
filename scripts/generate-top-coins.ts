@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { generateVersion } from "./utils/manifest";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const OUTPUT_PATH = join(__dirname, "../top-coins-1000.json");
+const OUTPUT_PATH = join(__dirname, "../.metadata/top-coins.json");
 const API_BASE = "https://pro-api.coingecko.com/api/v3";
 const PAGE_SIZE = 250;
 const MARKET_SCAN_COUNT = 200000;
@@ -19,6 +19,16 @@ const SUPPORTED_CHAINS = {
     arbitrum: "arbitrum-one",
     tron: "tron",
 } as const;
+
+const CHAIN_IDS: Record<string, number> = {
+    ethereum: 1,
+    binance: 56,
+    polygon: 137,
+    solana: 0,
+    base: 8453,
+    arbitrum: 42161,
+    tron: 0,
+};
 
 interface CoinGeckoMarketCoin {
     id: string;
@@ -35,11 +45,17 @@ interface CoinGeckoAssetPlatform {
     native_coin_id: string | null;
 }
 
+interface TokenInfo {
+    address: string;
+    decimals: number;
+    chain_id: number;
+}
+
 interface TopCoinsManifest {
     version: string;
     updatedAt: string;
     source: "coingecko";
-    chains: Record<string, string[]>;
+    chains: Record<string, TokenInfo[]>;
 }
 
 function readEnvFileValue(filePath: string, key: string): string | undefined {
@@ -195,14 +211,46 @@ async function fetchNativeChains(apiKey: string): Promise<Map<string, string[]>>
     return new Map([...byCoinId.entries()].map(([coinId, chains]) => [coinId, [...chains]]));
 }
 
-function pushUnique(values: string[], value: string): void {
-    if (!values.includes(value) && values.length < PER_CHAIN_LIMIT) {
-        values.push(value);
+interface CoinDetailPlatform {
+    decimal_place: number | null;
+    contract_address: string;
+}
+
+async function fetchAllCoinDetails(
+    coinIds: string[],
+    apiKey: string,
+): Promise<Map<string, Record<string, CoinDetailPlatform>>> {
+    const result = new Map<string, Record<string, CoinDetailPlatform>>();
+    const batchSize = 50;
+
+    for (let i = 0; i < coinIds.length; i += batchSize) {
+        const batch = coinIds.slice(i, i + batchSize);
+        console.log(
+            `Fetching details batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(coinIds.length / batchSize)}...`,
+        );
+
+        const promises = batch.map((coinId) =>
+            fetchJson<{ detail_platforms?: Record<string, CoinDetailPlatform> }>(
+                `/coins/${coinId}`,
+                apiKey,
+            )
+                .then((coin) => [coinId, coin.detail_platforms ?? {}] as const)
+                .catch(() => [coinId, {}] as const),
+        );
+
+        const details = await Promise.all(promises);
+        for (const [coinId, platforms] of details) {
+            result.set(coinId, platforms);
+        }
+
+        await Bun.sleep(1000);
     }
+
+    return result;
 }
 
 async function generateTopCoinsJson(): Promise<void> {
-    console.log("=== Generating top-coins-1000.json ===\n");
+    console.log("=== Generating top-coins.json ===\n");
 
     const apiKey = getApiKey();
     const [markets, platformsById, nativeChainsByCoinId] = await Promise.all([
@@ -211,39 +259,58 @@ async function generateTopCoinsJson(): Promise<void> {
         fetchNativeChains(apiKey),
     ]);
 
-    const chains = new Map<string, string[]>(
-        Object.keys(SUPPORTED_CHAINS).map((chain) => [chain, []]),
+    const coinIds = markets.map((m) => m.id);
+    const detailsMap = await fetchAllCoinDetails(coinIds, apiKey);
+
+    const chainMap = new Map<string, Map<string, TokenInfo>>(
+        Object.keys(SUPPORTED_CHAINS).map((chain) => [chain, new Map()]),
     );
 
     for (const coin of markets) {
         const platforms = platformsById.get(coin.id) ?? {};
+        const details = detailsMap.get(coin.id) ?? {};
 
         for (const [chainName, platformId] of Object.entries(SUPPORTED_CHAINS)) {
             const address = platforms[platformId];
-            if (address) {
-                pushUnique(chains.get(chainName)!, address);
+            if (address && address !== "native") {
+                const detail = details[platformId];
+                const decimals = detail?.decimal_place ?? 18;
+                const chainId = CHAIN_IDS[chainName];
+                const tokens = chainMap.get(chainName)!;
+                if (tokens.size < PER_CHAIN_LIMIT) {
+                    tokens.set(address, { address, decimals, chain_id: chainId });
+                }
             }
         }
 
         const nativeChains = nativeChainsByCoinId.get(coin.id) ?? [];
         for (const chainName of nativeChains) {
-            pushUnique(chains.get(chainName)!, "native");
+            const chainId = CHAIN_IDS[chainName];
+            const tokens = chainMap.get(chainName)!;
+            if (tokens.size < PER_CHAIN_LIMIT) {
+                tokens.set("native", { address: "native", decimals: 18, chain_id: chainId });
+            }
         }
+    }
+
+    const chains: Record<string, TokenInfo[]> = {};
+    for (const [name, tokens] of chainMap.entries()) {
+        chains[name] = Array.from(tokens.values());
     }
 
     const manifest: TopCoinsManifest = {
         version: generateVersion(),
         updatedAt: new Date().toISOString(),
         source: "coingecko",
-        chains: Object.fromEntries(chains.entries()),
+        chains,
     };
 
     writeFileSync(OUTPUT_PATH, JSON.stringify(manifest, null, 2), "utf-8");
 
     console.log("\n=== Complete ===");
     console.log(`Saved to: ${OUTPUT_PATH}`);
-    for (const [chain, values] of chains.entries()) {
-        console.log(`${chain}: ${values.length}`);
+    for (const [name, tokens] of Object.entries(chains)) {
+        console.log(`${name}: ${tokens.length}`);
     }
 }
 

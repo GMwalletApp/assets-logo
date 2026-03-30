@@ -7,6 +7,7 @@
     "typecheck": "npx tsc --noEmit",
     "generate:default": "bun run scripts/generate-default.ts",
     "generate:symbols": "bun run scripts/generate-symbols.ts",
+    "generate:top-coins": "bun run scripts/generate-top-coins.ts",
     "apply:overrides": "bun run scripts/apply-overrides.ts",
     "process:token-override": "bun run scripts/process-token-override.ts",
     "process:chain-override": "bun run scripts/process-chain-override.ts",
