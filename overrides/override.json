@@ -7,6 +7,13 @@
           "*"
         ],
         "logo": "f3e609d62c2fbac4.png"
+      },
+      {
+        "symbol": "USDT",
+        "chains": [
+          "*"
+        ],
+        "logo": "5614a5b88d98b219.png"
       }
     ]
   },
